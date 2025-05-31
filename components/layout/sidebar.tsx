@@ -6,7 +6,11 @@ import { Home, Package, Users, BarChart3, FileText, X } from "lucide-react";
 import Link from "next/link.js";
 import SanzelNoBackground from "@/public/sanzel-no-background.png";
 
-export const Sidebar = () => {
+interface SidebarProps {
+  onClose?: () => void;
+}
+
+export const Sidebar = ({ onClose }: SidebarProps) => {
   const pathname = usePathname();
 
   const navItems = [
@@ -23,10 +27,24 @@ export const Sidebar = () => {
 
   const handleCloseSession = () => {
     console.log("closing session");
+    onClose?.(); // Close sidebar on mobile after action
+  };
+
+  const handleNavClick = () => {
+    // Close sidebar on mobile when navigating
+    onClose?.();
   };
 
   return (
-    <div className="w-64 p-6 relative">
+    <div className="w-64 bg-primary p-6 relative h-full">
+      {/* Mobile close button */}
+      <button
+        onClick={onClose}
+        className="md:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-secondary transition-colors"
+      >
+        <X size={20} />
+      </button>
+
       <div className="mb-8">
         <Image
           alt="Logo"
@@ -37,6 +55,7 @@ export const Sidebar = () => {
           className="h-12 w-auto mx-auto"
         />
       </div>
+
       <nav>
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -44,6 +63,7 @@ export const Sidebar = () => {
             <Link
               key={item.name}
               href={item.href}
+              onClick={handleNavClick}
               className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
                 isActive(item.href)
                   ? "bg-secondary text-custom-white"
@@ -56,6 +76,7 @@ export const Sidebar = () => {
           );
         })}
       </nav>
+
       <div className="absolute bottom-6 left-6 right-6">
         <button
           onClick={handleCloseSession}

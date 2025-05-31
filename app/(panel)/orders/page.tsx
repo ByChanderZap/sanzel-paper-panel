@@ -1,3 +1,4 @@
+import { Plus } from "lucide-react";
 import Link from "next/link";
 
 export default function OrdersPage() {
@@ -35,6 +36,41 @@ export default function OrdersPage() {
       total: 4000,
       status: "delivered",
     },
+    {
+      id: "41",
+      client: "john doe",
+      date: "2023-10-01",
+      total: 4000,
+      status: "delivered",
+    },
+    {
+      id: "5",
+      client: "john doe",
+      date: "2023-10-01",
+      total: 4000,
+      status: "delivered",
+    },
+    {
+      id: "6",
+      client: "john doe",
+      date: "2023-10-01",
+      total: 4000,
+      status: "delivered",
+    },
+    {
+      id: "7",
+      client: "john doe",
+      date: "2023-10-01",
+      total: 4000,
+      status: "delivered",
+    },
+    {
+      id: "8",
+      client: "john doe",
+      date: "2023-10-01",
+      total: 4000,
+      status: "delivered",
+    },
   ];
 
   return (
@@ -46,7 +82,7 @@ export default function OrdersPage() {
           href="/orders/new"
           className="bg-secondary hover:bg-secondary/80 px-6 py-2 rounded-full font-medium transition-colors"
         >
-          New Order
+          <Plus size={24} />
         </Link>
       </div>
 
