@@ -1,5 +1,10 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { CustomTable } from "@/components/table";
+import { TableHeader } from "@/components/table-header";
+import { TableBody } from "@/components/table-body";
+import { TableRow } from "@/components/table-row";
+import { TableRowContent } from "@/components/table-row-content";
 
 export default function OrdersPage() {
   const orders = [
@@ -113,49 +118,48 @@ export default function OrdersPage() {
       </div>
 
       {/* Desktop Table - Hidden on mobile */}
-      <div className="hidden md:block bg-primary rounded-3xl p-6">
-        <div className="overflow-x-auto">
-          {/* Table Header */}
-          <div className="grid grid-cols-5 gap-4 border-b border-gray-700 pb-3 mb-4">
-            <div className="text-left font-medium text-custom-gray">
-              Order Id
-            </div>
-            <div className="text-left font-medium text-custom-gray">Client</div>
-            <div className="text-left font-medium text-custom-gray">Date</div>
-            <div className="text-left font-medium text-custom-gray">Status</div>
-            <div className="text-left font-medium text-custom-gray">Total</div>
-          </div>
-
-          {/* Table Body */}
-          <div className="space-y-0">
-            {orders.map((order) => (
-              <Link
-                key={order.id}
-                href={`/orders/${order.id}/summary`}
-                className="block"
-              >
-                <div className="grid grid-cols-5 gap-4 py-4 border-b border-gray-700 hover:bg-gray-700/50 transition-colors cursor-pointer">
-                  <div className="font-medium">{order.id}</div>
-                  <div className="text-custom-gray">{order.client}</div>
-                  <div className="text-custom-gray">{order.date}</div>
-                  <div>
+      <CustomTable>
+        <TableHeader
+          colNames={["Order Id", "Client", "Date", "Status", "Total"]}
+        />
+        <TableBody>
+          {orders.map((order) => (
+            <Link
+              key={order.id}
+              href={`/orders/${order.id}/summary`}
+              className="block"
+            >
+              <TableRow>
+                <TableRowContent content={order.id} className="font-medium" />
+                <TableRowContent
+                  content={order.client}
+                  className="text-custom-gray"
+                />
+                <TableRowContent
+                  content={order.date}
+                  className="text-custom-gray"
+                />
+                <TableRowContent
+                  content={
                     <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary">
                       {order.status}
                     </span>
-                  </div>
-                  <div className="font-medium">${order.total.toFixed(2)}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
-
+                  }
+                />
+                <TableRowContent
+                  content={`$${order.total.toFixed(2)}`}
+                  className="font-medium"
+                />
+              </TableRow>
+            </Link>
+          ))}
           {orders.length === 0 && (
             <div className="text-center py-8 text-gray-400">
               No orders found matching your search.
             </div>
           )}
-        </div>
-      </div>
+        </TableBody>
+      </CustomTable>
 
       {/* Mobile Card Layout - Hidden on desktop */}
       <div className="md:hidden space-y-4">
