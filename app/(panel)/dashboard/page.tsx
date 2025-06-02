@@ -1,9 +1,9 @@
 import { OrderSummary, ORDER_STATUS } from "@/types/dashboard";
-import { CustomTable } from "@/components/table";
-import { TableHeader } from "@/components/table-header";
-import { TableBody } from "@/components/table-body";
-import { TableRow } from "@/components/table-row";
-import { TableRowContent } from "@/components/table-row-content";
+import { CustomTable } from "@/components/custom-table/table";
+import { TableHeader } from "@/components/custom-table/table-header";
+import { TableBody } from "@/components/custom-table/table-body";
+import { TableRow } from "@/components/custom-table/table-row";
+import { TableRowContent } from "@/components/custom-table/table-row-content";
 
 export default function DashboardPage() {
   const stats = [
