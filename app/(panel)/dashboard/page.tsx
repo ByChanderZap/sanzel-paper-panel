@@ -14,6 +14,8 @@ export default async function DashboardPage() {
     { title: "Total Products", value: 500 },
   ];
 
+  const colNames = ["Order ID", "Client", "Date", "Status", "Total"];
+
   const recentOrders = await getOrdersPreview();
 
   return (
@@ -40,12 +42,10 @@ export default async function DashboardPage() {
 
         {/* Desktop Table - Hidden on mobile */}
         <CustomTable>
-          <TableHeader
-            colNames={["Order ID", "Client", "Date", "Status", "Total"]}
-          />
+          <TableHeader colNames={colNames} />
           <TableBody>
             {recentOrders.map((order) => (
-              <TableRow key={order.id}>
+              <TableRow key={order.id} colCount={colNames.length}>
                 <TableRowContent content={order.id} className="font-medium" />
                 <TableRowContent
                   content={order.client}

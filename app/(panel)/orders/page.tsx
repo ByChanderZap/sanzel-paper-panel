@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
-import { SearchBar } from "../../../components/search-bar";
-import { OrdersTable } from "../../../components/orders/orders-table";
-import { MobileOrdersTable } from "../../../components/orders/mobile-orders-table";
+import { SearchBar } from "@/components/search-bar";
+import { OrdersTable } from "@/components/orders/orders-table";
+import { MobileOrdersTable } from "@/components/orders/mobile-orders-table";
 
 export default async function OrdersPage({
   searchParams,
@@ -10,7 +10,6 @@ export default async function OrdersPage({
   searchParams: { query?: string; page?: string };
 }) {
   const params = await searchParams;
-
   const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;
 

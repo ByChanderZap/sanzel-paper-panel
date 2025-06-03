@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { OrdersTableProps } from "../../types/orders";
 import { getOrdersPreview } from "../../lib/data/fetchOrders";
 import {
   CustomTable,
@@ -7,7 +8,6 @@ import {
   TableRow,
   TableRowContent,
 } from "@/components/custom-table";
-import { OrdersTableProps } from "../../types/orders";
 
 // type OrdersTableProps = {
 //   query: string;
@@ -19,12 +19,11 @@ export async function OrdersTable({
   currentPage = 1,
 }: OrdersTableProps) {
   const orders = await getOrdersPreview(query, currentPage);
+  const colNames = ["Order Id", "Client", "Date", "Status", "Total"];
 
   return (
     <CustomTable>
-      <TableHeader
-        colNames={["Order Id", "Client", "Date", "Status", "Total"]}
-      />
+      <TableHeader colNames={colNames} />
       <TableBody>
         {orders.map((order) => (
           <Link
@@ -32,7 +31,7 @@ export async function OrdersTable({
             href={`/orders/${order.id}/summary`}
             className="block"
           >
-            <TableRow>
+            <TableRow colCount={colNames.length}>
               <TableRowContent content={order.id} className="font-medium" />
               <TableRowContent
                 content={order.client}
