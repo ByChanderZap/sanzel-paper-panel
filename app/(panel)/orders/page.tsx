@@ -4,13 +4,15 @@ import { SearchBar } from "../../../components/search-bar";
 import { OrdersTable } from "../../../components/orders/orders-table";
 import { MobileOrdersTable } from "../../../components/orders/mobile-orders-table";
 
-export default function OrdersPage({
+export default async function OrdersPage({
   searchParams,
 }: {
   searchParams: { query?: string; page?: string };
 }) {
-  const query = searchParams?.query || "";
-  const currentPage = Number(searchParams?.page) || 1;
+  const params = await searchParams;
+
+  const query = params?.query || "";
+  const currentPage = Number(params?.page) || 1;
 
   return (
     <>

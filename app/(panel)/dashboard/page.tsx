@@ -1,40 +1,20 @@
-import { OrderSummary, ORDER_STATUS } from "@/types/dashboard";
 import { CustomTable } from "@/components/custom-table/table";
 import { TableHeader } from "@/components/custom-table/table-header";
 import { TableBody } from "@/components/custom-table/table-body";
 import { TableRow } from "@/components/custom-table/table-row";
 import { TableRowContent } from "@/components/custom-table/table-row-content";
+import MobileCard from "@/components/mobile-card";
+import { getOrdersPreview } from "@/lib/data/fetchOrders";
+import MobileCardLayout from "@/components/mobile-card-layout";
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
   const stats = [
     { title: "Total Orders", value: 1234 },
     { title: "Total Clients", value: 3333 },
     { title: "Total Products", value: 500 },
   ];
 
-  const recentOrders: OrderSummary[] = [
-    {
-      id: "1",
-      client: "John Doe",
-      total: 100.0,
-      date: "2023-10-01",
-      status: ORDER_STATUS.IN_PROCESS,
-    },
-    {
-      id: "2",
-      client: "Jane Smith",
-      total: 200.0,
-      date: "2023-10-02",
-      status: ORDER_STATUS.COMPLETED,
-    },
-    {
-      id: "3",
-      client: "Alice Johnson",
-      total: 150.0,
-      date: "2023-10-03",
-      status: ORDER_STATUS.COMPLETED,
-    },
-  ];
+  const recentOrders = await getOrdersPreview();
 
   return (
     <>
@@ -92,31 +72,9 @@ export default function DashboardPage() {
         </CustomTable>
 
         {/* Mobile Card Layout - Hidden on desktop */}
-        <div className="md:hidden space-y-4">
-          {recentOrders.map((order, index) => (
-            <div
-              key={index}
-              className="bg-secondary rounded-2xl p-4 hover:bg-gray-700/20 transition-colors"
-            >
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <div className="text-sm text-custom-gray">
-                    Order #{order.id}
-                  </div>
-                  <div className="font-medium text-lg">{order.client}</div>
-                </div>
-                <span className="px-3 py-1 rounded-full text-sm font-medium bg-primary">
-                  {order.status}
-                </span>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="text-custom-gray text-sm">{order.date}</div>
-                <div className="font-medium text-lg">
-                  ${order.total.toFixed(2)}
-                </div>
-              </div>
-            </div>
+        <MobileCardLayout>
+          {recentOrders.map((order) => (
+            <MobileCard order={order} key={order.id} />
           ))}
 
           {recentOrders.length === 0 && (
@@ -124,7 +82,7 @@ export default function DashboardPage() {
               No recent orders found.
             </div>
           )}
-        </div>
+        </MobileCardLayout>
       </div>
     </>
   );

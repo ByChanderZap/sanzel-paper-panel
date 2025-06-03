@@ -1,15 +1,5 @@
-type TempOrderType = {
-  id: string;
-  client: string;
-  date: string;
-  total: number;
-  status: "delivered" | "pending" | "cancelled";
-  // material_name?: string;
-  // quantity?: number;
-  // coil_height?: number;
-  // coil_length?: number;
-  // square_meters?: number;
-}
+import { TempOrderType } from "@/types/orders";
+
 
 const orders: TempOrderType[] = [
     {
@@ -83,7 +73,7 @@ const orders: TempOrderType[] = [
   ];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const getOrdersPreview = async (query: string, page: number): Promise<TempOrderType[]> => {
+export const getOrdersPreview = async (query?: string, page?: number): Promise<TempOrderType[]> => {
   //TODO: IMPLEMENT REAL LOGIC
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -95,8 +85,7 @@ export const getOrdersPreview = async (query: string, page: number): Promise<Tem
   })
 }
 
-
-const matchOrders = (order: TempOrderType, query: string): boolean => {
+const matchOrders = (order: TempOrderType, query?: string): boolean => {
   if (!query) {
     return true
   }
