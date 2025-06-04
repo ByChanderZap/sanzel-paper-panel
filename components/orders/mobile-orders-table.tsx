@@ -1,15 +1,13 @@
 import Link from "next/link";
-import { getOrdersPreview } from "../../lib/data/fetchOrders";
-import { OrdersTableProps } from "../../types/orders";
-import MobileCard from "../mobile-card";
-import MobileCardLayout from "../mobile-card-layout";
+import { TempOrderType } from "@/types/orders";
+import MobileCard from "@/components/mobile-card";
+import MobileCardLayout from "@/components/mobile-card-layout";
 
 export async function MobileOrdersTable({
-  query,
-  currentPage = 1,
-}: OrdersTableProps) {
-  const orders = await getOrdersPreview(query, currentPage);
-
+  orders,
+}: {
+  orders: TempOrderType[];
+}) {
   return (
     <MobileCardLayout>
       {orders.map((order) => (

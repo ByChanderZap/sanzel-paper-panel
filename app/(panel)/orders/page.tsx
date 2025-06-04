@@ -1,8 +1,7 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
-import { OrdersTable } from "@/components/orders/orders-table";
-import { MobileOrdersTable } from "@/components/orders/mobile-orders-table";
+import { OrdersPageContent } from "@/components/orders/orders-content";
 
 export default async function OrdersPage({
   searchParams,
@@ -29,11 +28,13 @@ export default async function OrdersPage({
       {/* Search Bar */}
       <SearchBar placeholder="Search orders..." />
 
+      <OrdersPageContent query={query} currentPage={currentPage} />
+
       {/* Desktop Table - Hidden on mobile */}
-      <OrdersTable query={query} currentPage={currentPage} />
+      {/* <OrdersTable query={query} currentPage={currentPage} /> */}
 
       {/* Mobile Card Layout - Hidden on desktop */}
-      <MobileOrdersTable query={query} currentPage={currentPage} />
+      {/* <MobileOrdersTable query={query} currentPage={currentPage} /> */}
     </>
   );
 }

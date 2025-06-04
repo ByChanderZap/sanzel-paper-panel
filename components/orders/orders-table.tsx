@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { OrdersTableProps } from "../../types/orders";
-import { getOrdersPreview } from "../../lib/data/fetchOrders";
+import { TempOrderType } from "@/types/orders";
 import {
   CustomTable,
   TableHeader,
@@ -9,16 +8,7 @@ import {
   TableRowContent,
 } from "@/components/custom-table";
 
-// type OrdersTableProps = {
-//   query: string;
-//   currentPage?: number;
-// };
-
-export async function OrdersTable({
-  query,
-  currentPage = 1,
-}: OrdersTableProps) {
-  const orders = await getOrdersPreview(query, currentPage);
+export async function OrdersTable({ orders }: { orders: TempOrderType[] }) {
   const colNames = ["Order Id", "Client", "Date", "Status", "Total"];
 
   return (

@@ -1,5 +1,4 @@
-import { SearchBar } from "@/components/search-bar";
-import { ClientsTable } from "@/components/clients/clients-table";
+import { ClientsPageContent } from "@/components/clients/clients-content";
 
 export default async function ClientsPage({
   searchParams,
@@ -16,11 +15,7 @@ export default async function ClientsPage({
         <h1 className="text-3xl font-bold">Clients</h1>
       </div>
 
-      {/* Search Bar */}
-      <SearchBar placeholder="Search clients..." />
-
-      {/** Place holder for future content */}
-      <ClientsTable query={query} currentPage={currentPage} />
+      <ClientsPageContent query={query} currentPage={currentPage} />
     </>
   );
 }
