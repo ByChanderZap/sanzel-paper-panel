@@ -29,12 +29,6 @@ export default async function OrdersPage({
       <SearchBar placeholder="Search orders..." />
 
       <OrdersPageContent query={query} currentPage={currentPage} />
-
-      {/* Desktop Table - Hidden on mobile */}
-      {/* <OrdersTable query={query} currentPage={currentPage} /> */}
-
-      {/* Mobile Card Layout - Hidden on desktop */}
-      {/* <MobileOrdersTable query={query} currentPage={currentPage} /> */}
     </>
   );
 }

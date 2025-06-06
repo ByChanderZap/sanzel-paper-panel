@@ -1,4 +1,5 @@
 import { ClientsPageContent } from "@/components/clients/clients-content";
+import { SearchBar } from "@/components/search-bar";
 
 export default async function ClientsPage({
   searchParams,
@@ -14,6 +15,9 @@ export default async function ClientsPage({
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Clients</h1>
       </div>
+
+      {/* Search Bar */}
+      <SearchBar placeholder="Search clients..." />
 
       <ClientsPageContent query={query} currentPage={currentPage} />
     </>
