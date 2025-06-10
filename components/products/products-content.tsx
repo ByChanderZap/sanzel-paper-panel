@@ -10,10 +10,6 @@ export async function ProductsPageContent({
   const products = await fetchProducts(query, currentPage);
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold">Products</h1>
-      </div>
-
       {/* Desktop Layout */}
       <ProductsTable products={products} />
 

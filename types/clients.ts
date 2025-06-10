@@ -17,3 +17,17 @@ export type ClientPreview = {
   status: ClientStatus;
   lastOrder: string;
 }
+
+export interface ClientsFormState {
+  message?: string | null;
+  success?: string | null;
+  errors?: {
+    name?: string[];
+    email?: string[];
+    phone?: string[];
+    shippingNumber?: string[];
+    address?: string[];
+    city?: string[];
+    state?: string[];
+  };
+}
