@@ -32,6 +32,7 @@ export function NewClientForm() {
             required={true}
             placeholder="Enter client name"
             type="text"
+            errors={state.errors?.name}
           />
 
           <InputFormText
@@ -41,6 +42,7 @@ export function NewClientForm() {
             required={true}
             placeholder="Enter email address"
             type="email"
+            errors={state.errors?.email}
           />
           <InputFormText
             id="phone"
@@ -49,6 +51,7 @@ export function NewClientForm() {
             placeholder="Enter phone number"
             type="tel"
             required={true}
+            errors={state.errors?.phone}
           />
           <InputFormText
             id="shippingNumber"
@@ -57,6 +60,7 @@ export function NewClientForm() {
             placeholder="Enter client shipping number"
             type="text"
             required={false}
+            errors={state.errors?.shippingNumber}
           />
         </div>
       </div>
@@ -74,6 +78,7 @@ export function NewClientForm() {
             required={true}
             placeholder="Enter street address"
             type="text"
+            errors={state.errors?.address}
           />
           <InputFormText
             id="city"
@@ -82,6 +87,7 @@ export function NewClientForm() {
             required={true}
             placeholder="Enter city"
             type="text"
+            errors={state.errors?.city}
           />
           <InputFormText
             id="state"
@@ -90,6 +96,7 @@ export function NewClientForm() {
             required={true}
             placeholder="Enter state"
             type="text"
+            errors={state.errors?.state}
           />
         </div>
       </div>

@@ -1,6 +1,3 @@
-// "use client";
-// import { useFormStatus } from "react-dom";
-
 export default function FormSendButton({
   text = "Send",
   loadingText = "Sending...",

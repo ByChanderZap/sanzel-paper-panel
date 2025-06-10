@@ -19,7 +19,7 @@ export type ClientPreview = {
 }
 
 export interface ClientsFormState {
-  message?: string | null;
+  errorMessage?: string | null;
   success?: string | null;
   errors?: {
     name?: string[];
