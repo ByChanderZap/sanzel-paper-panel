@@ -1,23 +1,21 @@
-export function InputFormText({
+export function InputFormTextarea({
   labelText,
   required = false,
-  type,
   placeholder,
   id,
   name,
   htmlFor = id,
   errors,
-  steps,
+  rows = 3,
 }: {
   labelText: string;
   required?: boolean;
   placeholder: string;
   id: string;
   name: string;
-  type: "text" | "email" | "tel" | "number";
   htmlFor?: string;
   errors?: string[];
-  steps?: string;
+  rows?: number;
 }) {
   return (
     <div>
@@ -27,18 +25,17 @@ export function InputFormText({
       >
         {labelText} <span className="text-red-400">{required ? "*" : ""}</span>
       </label>
-      <input
-        type={type}
+      <textarea
         id={id}
         name={name}
         placeholder={placeholder}
+        rows={rows}
         className={`w-full bg-slate-600 border rounded-md px-3 py-3 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:border-transparent transition-all ${
           errors?.length
             ? "border-red-500 focus:ring-red-500"
             : "border-slate-600 focus:ring-orange-500"
         }`}
         required={required}
-        step={steps}
       />
       {errors?.length &&
         errors.map((err: string) => (

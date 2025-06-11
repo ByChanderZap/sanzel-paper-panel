@@ -11,15 +11,15 @@ generator client {
 }
 
 model Clients {
-  id            String    @id @default(cuid())
-  email         String    @unique
+  id            String      @id @default(cuid())
+  email         String      @unique
   phone         String
   shippingNumber String?
   address       String
   city          String
   state         String
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
   deletedAt     DateTime?
   
   // Relations
@@ -27,15 +27,16 @@ model Clients {
 }
 
 model Products {
-  id          String    @id @default(cuid())
+  id          String        @id @default(cuid())
   name        String
   description String?
+  quality     PaperQuality  @default(PRIMERA)
   stock       Int
-  unit_price  Float     // Base price in cents
+  unit_price  Float         // Base price in cents
   width       Float
   linear_size Float
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   deletedAt   DateTime?
   
   // Relations
@@ -43,34 +44,34 @@ model Products {
 }
 
 model Orders {
-  id         String       @id @default(cuid())
+  id         String         @id @default(cuid())
   clientId   String
-  price      Float                              // Total price in cents
-  discount   Int?         @default(0)           // Discount in cents (optional)
-  status     OrderStatus  @default(PENDING)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
+  price      Float                                // Total price in cents
+  discount   Int?           @default(0)           // Discount in cents (optional)
+  status     OrderStatus    @default(PENDING)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
   deletedAt  DateTime?
   
   // Relations
-  client     Clients      @relation(fields: [clientId], references: [id])
+  client     Clients        @relation(fields: [clientId], references: [id])
   orderItems OrderItems[]
 }
 
 model OrderItems {
-  id          String      @id @default(cuid())
+  id          String        @id @default(cuid())
   orderId     String
   productId   String
   quantity    Int
-  unit_price  Int         // Price at time of order (can differ from product base price)
-  width       Float       // Width at time of order (can differ from product base width)
-  linear_size Float       // Linear size at time of order (can differ from product base linear_size)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  unit_price  Int           // Price at time of order (can differ from product base price)
+  width       Float         // Width at time of order (can differ from product base width)
+  linear_size Float         // Linear size at time of order (can differ from product base linear_size)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   
   // Relations
-  order       Orders    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product     Products  @relation(fields: [productId], references: [id])
+  order       Orders        @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Products      @relation(fields: [productId], references: [id])
   
   @@unique([orderId, productId])
 }
@@ -82,4 +83,13 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+enum PaperQuality {
+  PRIMERA
+  LINEA
+  SEGUNDA
+  TERCERA
+  SOBRANTE
+  REPROCESO
 }

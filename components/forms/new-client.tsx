@@ -1,13 +1,12 @@
 "use client";
 
 import { InputFormText } from "@/components/form-parts/form-input-text";
-import FormSendButton from "@/components/form-parts/form-send-button";
+import { FormSendButton } from "@/components/form-parts/form-send-button";
 import { ClientsFormState } from "@/types/clients";
 import { newClient } from "@/actions/clients";
 import { useActionState } from "react";
 
 const initialFormState: ClientsFormState = {
-  message: null,
   errors: {},
   success: null,
 };

@@ -1,4 +1,4 @@
-export default function FormSendButton({
+export function FormSendButton({
   text = "Send",
   loadingText = "Sending...",
   isPending,
