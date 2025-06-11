@@ -1,12 +1,12 @@
-import { ProductPreviewTmp } from "@/types/products";
 import { MobileCardLayout } from "@/components/mobile-card/mobile-card-layout";
 import { MobileCardTop } from "@/components/mobile-card/mobile-card-top";
 import MobileCardBottom from "@/components/mobile-card/mobile-card-bottom";
+import { Products } from "@prisma/client";
 
 export async function MobileProductsTable({
   products,
 }: {
-  products: ProductPreviewTmp[];
+  products: Products[];
 }) {
   return (
     <div className="md:hidden space-y-4">
@@ -19,7 +19,7 @@ export async function MobileProductsTable({
           />
           <MobileCardBottom
             leftTextHeader={"Price"}
-            leftTextContent={product.material_price.toString()}
+            leftTextContent={product.unit_price.toString()}
             middleTextHeader="Stock"
             middleTextContent={product.stock.toString()}
           />

@@ -1,7 +1,7 @@
 import { ProductsContentProps } from "@/types/products";
 import { ProductsTable } from "@/components/products/products-table";
-import { fetchProducts } from "@/lib/data/fetchProducts";
 import { MobileProductsTable } from "@/components/products/mobile-products-table";
+import { fetchProducts } from "@/lib/products/products";
 
 export async function ProductsPageContent({
   query,

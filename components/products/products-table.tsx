@@ -1,4 +1,3 @@
-import { ProductPreviewTmp } from "@/types/products";
 import {
   CustomTable,
   TableHeader,
@@ -6,12 +5,9 @@ import {
   TableRow,
   TableRowContent,
 } from "@/components/custom-table";
+import { Products } from "@prisma/client";
 
-export async function ProductsTable({
-  products,
-}: {
-  products: ProductPreviewTmp[];
-}) {
+export async function ProductsTable({ products }: { products: Products[] }) {
   const colNames = ["Id", "Name", "Price", "Stock", "Quality"];
 
   return (
@@ -29,7 +25,7 @@ export async function ProductsTable({
                 className="text-custom-white"
               />
               <TableRowContent
-                content={prod.material_price}
+                content={prod.unit_price}
                 className="text-custom-gray"
               />
               <TableRowContent content={prod.stock} className="font-medium" />

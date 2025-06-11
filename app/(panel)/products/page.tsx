@@ -1,7 +1,9 @@
-import { SearchBar } from "@/components/search-bar";
-import { ProductsPageContent } from "@/components/products/products-content";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { SearchBar } from "@/components/search-bar";
+import { ProductsPageContent } from "@/components/products/products-content";
+import { fetchProductsTotalPages } from "@/lib/products/products";
+import { Pagination } from "@/components/pagination";
 
 export default async function ProductsPage({
   searchParams,
@@ -11,6 +13,8 @@ export default async function ProductsPage({
   const params = await searchParams;
   const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;
+  const totalPages = await fetchProductsTotalPages(query);
+
   return (
     <>
       <div className="flex justify-between items-center mb-8">
@@ -27,6 +31,7 @@ export default async function ProductsPage({
       <SearchBar placeholder="Search products..." />
 
       <ProductsPageContent currentPage={currentPage} query={query} />
+      <Pagination totalPages={totalPages} />
     </>
   );
 }
