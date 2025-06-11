@@ -1,3 +1,5 @@
+import { Clients } from "@prisma/client";
+
 export type ClientsTableProprs = {
   query: string;
   currentPage?: number;
@@ -8,15 +10,11 @@ export enum ClientStatus {
   INACTIVE = "Inactive"
 }
 
-export type ClientPreview = {
-  id: string;
-  client: string;
-  email: string;
-  orders: number;
+export type ClientWithStats = Clients & {
+  totalOrders: number;
   totalSpent: number;
-  status: ClientStatus;
-  lastOrder: string;
-}
+  lastOrder: Date | null;
+};
 
 export interface ClientsFormState {
   errorMessage?: string | null;

@@ -1,13 +1,13 @@
 import { ClientsTableProprs } from "@/types/clients";
-import { fetchClients } from "@/lib/data/fetchClients";
 import { MobileClientsList } from "@/components/clients/mobile-clients-list";
 import { ClientsTable } from "@/components/clients/clients-table";
+import { fetchClientsWithStats } from "@/lib/clients/clients";
 
 export async function ClientsPageContent({
   query,
   currentPage = 1,
 }: ClientsTableProprs) {
-  const clients = await fetchClients(query, currentPage);
+  const clients = await fetchClientsWithStats(query, currentPage);
 
   return (
     <>

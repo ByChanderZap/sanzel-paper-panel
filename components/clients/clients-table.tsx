@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ClientPreview } from "@/types/clients";
 import {
   CustomTable,
   TableHeader,
@@ -7,8 +6,13 @@ import {
   TableRow,
   TableRowContent,
 } from "@/components/custom-table";
+import { ClientWithStats } from "@/types/clients";
 
-export async function ClientsTable({ clients }: { clients: ClientPreview[] }) {
+export async function ClientsTable({
+  clients,
+}: {
+  clients: ClientWithStats[];
+}) {
   const colNames = [
     "Client",
     "Email",
@@ -31,7 +35,7 @@ export async function ClientsTable({ clients }: { clients: ClientPreview[] }) {
             >
               <TableRow colCount={colNames.length}>
                 <TableRowContent
-                  content={client.client}
+                  content={client.name}
                   className="font-medium"
                 />
                 <TableRowContent
@@ -39,7 +43,11 @@ export async function ClientsTable({ clients }: { clients: ClientPreview[] }) {
                   className="text-custom-gray"
                 />
                 <TableRowContent
-                  content={client.orders}
+                  content={client.phone}
+                  className="text-custom-gray"
+                />
+                <TableRowContent
+                  content={client.totalOrders}
                   className="text-custom-gray"
                 />
                 <TableRowContent
@@ -48,13 +56,8 @@ export async function ClientsTable({ clients }: { clients: ClientPreview[] }) {
                 />
                 <TableRowContent
                   content={
-                    <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary">
-                      {client.status}
-                    </span>
+                    client.lastOrder ? client.lastOrder.toDateString() : ""
                   }
-                />
-                <TableRowContent
-                  content={client.lastOrder}
                   className="text-custom-gray"
                 />
               </TableRow>

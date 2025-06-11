@@ -26,15 +26,9 @@ export async function newClient(prevState: ClientsFormState, formData: FormData)
 
   const { data } = validatedFields
   try {
-    await createClient({
-      address: data.address,
-      city: data.city,
-      email: data.email,
-      phone: data.phone,
-      shippingNumber: data.shippingNumber,
-      state: data.state,
-    })
+    await createClient(data)
   } catch(error) {
+    console.error(error)
     return {
       errorMessage: error as unknown as string
     }

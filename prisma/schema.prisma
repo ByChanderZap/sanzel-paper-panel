@@ -12,7 +12,8 @@ generator client {
 
 model Clients {
   id            String      @id @default(cuid())
-  email         String      @unique
+  name          String
+  email         String      
   phone         String
   shippingNumber String?
   address       String

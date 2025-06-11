@@ -1,7 +1,9 @@
-import { ClientsPageContent } from "@/components/clients/clients-content";
-import { SearchBar } from "@/components/search-bar";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { ClientsPageContent } from "@/components/clients/clients-content";
+import { SearchBar } from "@/components/search-bar";
+import { fetchClientsTotalPages } from "@/lib/clients/clients";
+import { Pagination } from "@/components/pagination";
 
 export default async function ClientsPage({
   searchParams,
@@ -11,6 +13,7 @@ export default async function ClientsPage({
   const params = await searchParams;
   const query = params.query || "";
   const currentPage = Number(params.page) || 1;
+  const totalPages = await fetchClientsTotalPages(query);
 
   return (
     <>
@@ -28,6 +31,7 @@ export default async function ClientsPage({
       <SearchBar placeholder="Search clients..." />
 
       <ClientsPageContent query={query} currentPage={currentPage} />
+      <Pagination totalPages={totalPages} />
     </>
   );
 }
