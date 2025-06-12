@@ -1,3 +1,5 @@
+import { OrderItems, Products } from "@prisma/client";
+
 export type OrdersTableProps = {
   query: string;
   currentPage?: number;
@@ -15,3 +17,5 @@ export type TempOrderType = {
   // coil_length?: number;
   // square_meters?: number;
 }
+
+export type OrderItemsWithProdsInfo = OrderItems & Partial<Products>

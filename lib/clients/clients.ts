@@ -8,6 +8,10 @@ export async function createClient(data: Prisma.ClientsCreateInput)  {
   })
 }
 
+export const getAllClients = async (): Promise<Clients[]> => {
+  return await db.clients.findMany()
+}
+
 const PAGE_SIZE = 10;
 export const fetchClients = async (query?: string, page: number = 1): Promise<Clients[]> => {
   const where: Prisma.ClientsWhereInput = { deletedAt: null };

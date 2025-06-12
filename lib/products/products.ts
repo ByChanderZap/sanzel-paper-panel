@@ -5,6 +5,10 @@ export async function createProduct(data: Prisma.ProductsCreateInput) {
   await db.products.create({data})
 }
  
+export const getAllProducts = async (): Promise<Products[]> => {
+  return await db.products.findMany()
+}
+
 const PAGE_SIZE = 10;
 export const fetchProducts = async (query?: string, page: number = 1): Promise<Products[]> => {
   const where: Prisma.ProductsWhereInput = { deletedAt: null };
