@@ -1,280 +1,416 @@
-import Link from "next/link.js";
-import { InputFormSelect } from "@/components/form-parts/form-select";
-import { FormSendButton } from "@/components/form-parts/form-send-button";
+"use client";
+import React, { useState, useMemo } from "react";
+import { Trash2, Plus } from "lucide-react";
+
+import {
+  CustomTable,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableRowContent,
+} from "@/components/custom-table";
+
+// Mock data - replace with your server actions
+const mockClients = [
+  { id: "1", name: "John Doe", email: "john@example.com" },
+  { id: "2", name: "Jane Smith", email: "jane@example.com" },
+  { id: "3", name: "Acme Corp", email: "contact@acme.com" },
+];
+
+const mockProducts = [
+  {
+    id: "1",
+    name: "A4 Paper",
+    basePrice: 0.5,
+    defaultWidth: 21.0,
+    defaultLinearSize: 29.7,
+  },
+  {
+    id: "2",
+    name: "A3 Paper",
+    basePrice: 0.75,
+    defaultWidth: 29.7,
+    defaultLinearSize: 42.0,
+  },
+  {
+    id: "3",
+    name: "Envelopes",
+    basePrice: 0.2,
+    defaultWidth: 11.0,
+    defaultLinearSize: 22.0,
+  },
+];
+
+const statusOptions = [
+  { value: "pending", label: "Pending" },
+  { value: "processing", label: "Processing" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" },
+];
 
 export function NewOrderForm() {
-  const orderItems = [];
+  const [selectedClient, setSelectedClient] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("pending");
+  const [orderItems, setOrderItems] = useState([]);
+
+  // Product form state
+  const [selectedProduct, setSelectedProduct] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [customWidth, setCustomWidth] = useState("");
+  const [customLinearSize, setCustomLinearSize] = useState("");
+
+  // Get selected product details
+  const selectedProductData = useMemo(
+    () => mockProducts.find((p) => p.id === selectedProduct),
+    [selectedProduct]
+  );
+
+  // Calculate item total
+  const calculateItemTotal = (item) => {
+    const multiplier = (item.width * item.linearSize) / 1000; // Convert to m²
+    return item.quantity * item.unitPrice * multiplier;
+  };
+
+  // Calculate order total
+  const orderTotal = useMemo(
+    () => orderItems.reduce((sum, item) => sum + calculateItemTotal(item), 0),
+    [orderItems]
+  );
+
+  // Add product to order
+  const addProductToOrder = () => {
+    if (!selectedProductData) return;
+
+    const width = customWidth
+      ? parseFloat(customWidth)
+      : selectedProductData.defaultWidth;
+    const linearSize = customLinearSize
+      ? parseFloat(customLinearSize)
+      : selectedProductData.defaultLinearSize;
+
+    const newItem = {
+      id: Date.now().toString(),
+      productId: selectedProductData.id,
+      productName: selectedProductData.name,
+      quantity: quantity,
+      width: width,
+      linearSize: linearSize,
+      unitPrice: selectedProductData.basePrice,
+    };
+
+    setOrderItems([...orderItems, newItem]);
+
+    // Reset form
+    setSelectedProduct("");
+    setQuantity(1);
+    setCustomWidth("");
+    setCustomLinearSize("");
+  };
+
+  // Remove product from order
+  const removeProductFromOrder = (itemId) => {
+    setOrderItems(orderItems.filter((item) => item.id !== itemId));
+  };
+
+  // Update order item
+  const updateOrderItem = (itemId, field, value) => {
+    setOrderItems(
+      orderItems.map((item) =>
+        item.id === itemId ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-white mb-8">Create New Order</h1>
+    <div className="min-h-screen bg-primary p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-3xl font-bold text-custom-white mb-8">
+          Create New Order
+        </h1>
 
-      <form className="space-y-8">
-        {/* Client Selection */}
-        <div>
-          <label className="block text-white text-lg font-medium mb-3">
-            Client
-          </label>
-          <InputFormSelect
-            id="clientId"
-            name="clientId"
-            labelText=""
-            required={true}
-            // options={[
-            //   { value: "", label: "Select Client" },
-            //   ...clients.map(client => ({
-            //     value: client.id,
-            //     label: client.name + (client.email ? ` (${client.email})` : '')
-            //   }))
-            // ]}
-            options={["a", "b", "c"]}
-            htmlFor="clientId"
-            // value={selectedClient}
-            // onChange={(e) => setSelectedClient(e.target.value)}
-          />
-        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column - Form Inputs */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Client Selection */}
+            <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
+              <label className="block text-custom-white text-lg font-medium mb-4">
+                Client
+              </label>
+              <select
+                value={selectedClient}
+                onChange={(e) => setSelectedClient(e.target.value)}
+                className="w-full px-4 py-3 bg-primary border border-gray-600 rounded-2xl text-custom-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Client</option>
+                {mockClients.map((client) => (
+                  <option key={client.id} value={client.id}>
+                    {client.name} {client.email && `(${client.email})`}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Product Selection */}
-        <div>
-          <label className="block text-white text-lg font-medium mb-3">
-            Add Products
-          </label>
-          <div className="bg-secondary p-6 rounded-lg border border-slate-600">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
-              <div>
-                <label className="block text-slate-200 text-sm font-medium mb-2">
-                  Product
-                </label>
-                <select
-                  // value={selectedProduct}
-                  // onChange={(e) => setSelectedProduct(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select Product</option>
-                  {/* {products.map(product => (
-                    <option key={product.id} value={product.id}>
-                      {product.name}
-                    </option>
-                  ))} */}
-                  {["uno", "dos", "tres"].map((product) => (
-                    <option key={product} value={product}>
-                      {product}
-                    </option>
-                  ))}
-                </select>
-              </div>
+            {/* Add Products */}
+            <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
+              <h3 className="text-custom-white text-lg font-medium mb-4">
+                Add Products
+              </h3>
 
-              <div>
-                <label className="block text-slate-200 text-sm font-medium mb-2">
-                  Quantity
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  // value={quantity}
-                  // onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <div className="space-y-4">
+                {/* Product Selection */}
+                <div>
+                  <label className="block text-custom-white text-sm font-medium mb-2">
+                    Product
+                  </label>
+                  <select
+                    value={selectedProduct}
+                    onChange={(e) => setSelectedProduct(e.target.value)}
+                    className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Select Product</option>
+                    {mockProducts.map((product) => (
+                      <option key={product.id} value={product.id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
-                <label className="block text-slate-200 text-sm font-medium mb-2">
-                  Custom Width
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Default"
-                  // value={customWidth}
-                  // onChange={(e) => setCustomWidth(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                {/* Quantity */}
+                <div>
+                  <label className="block text-custom-white text-sm font-medium mb-2">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                    className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
 
-              <div>
-                <label className="block text-slate-200 text-sm font-medium mb-2">
-                  Custom Linear Size
-                </label>
-                <input
-                  type="number"
-                  step="0.01"
-                  placeholder="Default"
-                  // value={customLinearSize}
-                  // onChange={(e) => setCustomLinearSize(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+                {/* Custom Dimensions */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-custom-white text-sm font-medium mb-2">
+                      Width (cm)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={customWidth}
+                      onChange={(e) => setCustomWidth(e.target.value)}
+                      placeholder={
+                        selectedProductData?.defaultWidth?.toString() ||
+                        "Default"
+                      }
+                      className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-custom-white text-sm font-medium mb-2">
+                      Linear Size (cm)
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={customLinearSize}
+                      onChange={(e) => setCustomLinearSize(e.target.value)}
+                      placeholder={
+                        selectedProductData?.defaultLinearSize?.toString() ||
+                        "Default"
+                      }
+                      className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
 
-              <div className="flex items-end">
+                {/* Add Button */}
                 <button
                   type="button"
-                  // onClick={addProductToOrder}
-                  // disabled={!selectedProduct}
-                  className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed transition-colors font-medium"
+                  onClick={addProductToOrder}
+                  disabled={!selectedProduct}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-2xl hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors font-medium"
                 >
+                  <Plus size={18} />
                   Add to Order
                 </button>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Products Table */}
-        {orderItems.length > 0 && (
-          <div>
-            <label className="block text-white text-lg font-medium mb-3">
-              Products
-            </label>
-            <div className="bg-slate-800 rounded-lg border border-slate-600 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="bg-slate-700">
-                    <tr>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Product
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Quantity
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Width
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Linear Size
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Unit Price
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Total
-                      </th>
-                      <th className="px-6 py-4 text-left text-white font-medium">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-600">
-                    {orderItems.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-750">
-                        <td className="px-6 py-4 text-white">
-                          {item.productName}
-                        </td>
-                        <td className="px-6 py-4">
-                          <input
-                            type="number"
-                            min="1"
-                            value={item.quantity}
-                            // onChange={(e) =>
-                            //   updateOrderItem(
-                            //     item.id,
-                            //     "quantity",
-                            //     parseInt(e.target.value) || 1
-                            //   )
-                            // }
-                            className="w-20 px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={item.width}
-                            // onChange={(e) =>
-                            //   updateOrderItem(
-                            //     item.id,
-                            //     "width",
-                            //     parseFloat(e.target.value) || 0
-                            //   )
-                            // }
-                            className="w-24 px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-6 py-4">
-                          <input
-                            type="number"
-                            step="0.01"
-                            value={item.linearSize}
-                            // onChange={(e) =>
-                            //   updateOrderItem(
-                            //     item.id,
-                            //     "linearSize",
-                            //     parseFloat(e.target.value) || 0
-                            //   )
-                            // }
-                            className="w-24 px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-                          />
-                        </td>
-                        <td className="px-6 py-4 text-white">
-                          ${item.unitPrice.toFixed(2)}
-                        </td>
-                        <td className="px-6 py-4 text-white font-semibold">
-                          {/* ${calculateItemTotal(item).toFixed(2)} */}11
-                        </td>
-                        <td className="px-6 py-4">
-                          <button
-                            type="button"
-                            // onClick={() => removeProductFromOrder(item.id)}
-                            className="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
-                          >
-                            Remove
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Order Total */}
-              <div className="bg-slate-700 px-6 py-4 border-t border-slate-600">
-                <div className="flex justify-between items-center">
-                  <span className="text-lg font-semibold text-white">
-                    Order Total:
-                  </span>
-                  <span className="text-2xl font-bold text-green-400">
-                    {/* ${calculateOrderTotal().toFixed(2)} */}1111
-                  </span>
-                </div>
-              </div>
+            {/* Status Selection */}
+            <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
+              <label className="block text-custom-white text-lg font-medium mb-4">
+                Status
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                className="w-full px-4 py-3 bg-primary border border-gray-600 rounded-2xl text-custom-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {statusOptions.map((status) => (
+                  <option key={status.value} value={status.value}>
+                    {status.label}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
-        )}
 
-        {/* Status Selection */}
-        <div>
-          <label className="block text-white text-lg font-medium mb-3">
-            Status
-          </label>
-          <InputFormSelect
-            id="status"
-            name="status"
-            labelText=""
-            required={true}
-            options={["a", "b", "c"]}
-            htmlFor="status"
-            // value={selectedStatus}
-            // onChange={(e) => setSelectedStatus(e.target.value)}
-          />
+          {/* Right Column - Products Table */}
+          <div className="lg:col-span-2">
+            <div className="bg-secondary rounded-3xl border border-gray-700 overflow-hidden">
+              <div className="p-6 border-b border-gray-700">
+                <h3 className="text-custom-white text-lg font-medium">
+                  Products
+                </h3>
+              </div>
+
+              {orderItems.length === 0 ? (
+                <div className="p-8 text-center text-custom-white">
+                  No products added yet. Add products from the form on the left.
+                </div>
+              ) : (
+                <>
+                  <CustomTable>
+                    <TableHeader
+                      colNames={[
+                        "Product",
+                        "Quantity",
+                        "Width",
+                        "Linear Size",
+                        "Unit Price",
+                        "Total",
+                        "Actions",
+                      ]}
+                    />
+                    <TableBody>
+                      {orderItems.map((item) => (
+                        <TableRow key={item.id} colCount={7}>
+                          <TableRowContent
+                            content={
+                              <div className="text-custom-white text-sm font-medium">
+                                {item.productName}
+                              </div>
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <input
+                                type="number"
+                                min="1"
+                                value={item.quantity}
+                                onChange={(e) =>
+                                  updateOrderItem(
+                                    item.id,
+                                    "quantity",
+                                    parseInt(e.target.value) || 1
+                                  )
+                                }
+                                className="w-16 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
+                              />
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <input
+                                type="number"
+                                step="0.1"
+                                value={item.width}
+                                onChange={(e) =>
+                                  updateOrderItem(
+                                    item.id,
+                                    "width",
+                                    parseFloat(e.target.value) || 0
+                                  )
+                                }
+                                className="w-20 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
+                              />
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <input
+                                type="number"
+                                step="0.1"
+                                value={item.linearSize}
+                                onChange={(e) =>
+                                  updateOrderItem(
+                                    item.id,
+                                    "linearSize",
+                                    parseFloat(e.target.value) || 0
+                                  )
+                                }
+                                className="w-20 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
+                              />
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <div className="text-custom-white text-sm">
+                                ${item.unitPrice.toFixed(2)}
+                              </div>
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <div className="text-custom-white font-semibold text-sm">
+                                ${calculateItemTotal(item).toFixed(2)}
+                              </div>
+                            }
+                          />
+                          <TableRowContent
+                            content={
+                              <button
+                                type="button"
+                                onClick={() => removeProductFromOrder(item.id)}
+                                className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-xl transition-colors mx-auto"
+                                title="Remove product"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            }
+                          />
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </CustomTable>
+
+                  {/* Order Total */}
+                  <div className="bg-gray-700 px-6 py-4 border-t border-gray-600 rounded-b-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold text-white">
+                        Order Total:
+                      </span>
+                      <span className="text-2xl font-bold text-green-400">
+                        ${orderTotal.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Form Actions */}
-        <div className="flex justify-end gap-4 pt-6">
-          <Link
-            href="/orders"
-            className="px-8 py-3 bg-slate-600 text-slate-200 border border-slate-500 rounded-md transition-colors font-medium hover:bg-slate-500"
+        <div className="flex justify-end gap-4 mt-8">
+          <button
+            type="button"
+            className="px-8 py-3 bg-gray-600 text-gray-200 border border-gray-500 rounded-md transition-colors font-medium hover:bg-gray-500"
           >
             Cancel
-          </Link>
-
-          <FormSendButton
-            text="Create Order"
-            loadingText="Creating Order..."
-            isPending={false}
-            // disabled={
-            //   !selectedClient || orderItems.length === 0 || !selectedStatus
-            // }
-          />
+          </button>
+          <button
+            type="button"
+            disabled={!selectedClient || orderItems.length === 0}
+            className="px-8 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors font-medium"
+          >
+            Create Order
+          </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 }

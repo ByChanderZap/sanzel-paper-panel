@@ -4,7 +4,7 @@ import { NewOrderForm } from "@/components/forms/new-order";
 
 export default function CreateNewOrderPage() {
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="p-8 mx-auto">
       <FormHeader
         title="Create New Order"
         targetPrevPage="orders"
