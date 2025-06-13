@@ -120,19 +120,6 @@ export function NewOrderFormContent({
           Create New Order
         </h1>
 
-        {/* Display form state messages */}
-        {formState.message && (
-          <div
-            className={`mb-6 p-4 rounded-lg ${
-              formState.success
-                ? "bg-green-600 text-white"
-                : "bg-red-600 text-white"
-            }`}
-          >
-            {formState.message}
-          </div>
-        )}
-
         <form action={formAction}>
           {/* Hidden inputs for server action */}
           <input type="hidden" name="clientId" value={selectedClient} />
@@ -161,19 +148,20 @@ export function NewOrderFormContent({
 
               {/* Add Products */}
               <AddProducts
-                addProductToOrder={addProductToOrder}
                 customLinearSize={customLinearSize}
                 customWidth={customWidth}
-                products={products}
                 quantity={quantity}
                 selectedProduct={selectedProduct}
                 selectedProductData={selectedProductData}
+                customUnitPrice={customUnitPrice}
+                products={products}
+                errors={formState.errors?.orderItems}
+                addProductToOrder={addProductToOrder}
                 setCustomLinearSize={setCustomLinearSize}
                 setCustomWidth={setCustomWidth}
                 setQuantity={setQuantity}
                 setSelectedProduct={setSelectedProduct}
                 setCustomUnitPrice={setCustomUnitPrice}
-                customUnitPrice={customUnitPrice}
               />
 
               {/* Status Selection */}
@@ -228,11 +216,17 @@ export function NewOrderFormContent({
             </button>
           </div>
 
-          {/* Display validation errors */}
-          {formState.errors?.orderItems && (
-            <p className="text-red-400 text-sm mt-2">
-              {formState.errors.orderItems}
-            </p>
+          {/* Display form state messages */}
+          {formState.message && (
+            <div
+              className={`my-6 p-4 rounded-lg ${
+                formState.success
+                  ? "bg-green-600 text-white"
+                  : "bg-red-600 text-white"
+              }`}
+            >
+              {formState.message}
+            </div>
           )}
         </form>
       </div>

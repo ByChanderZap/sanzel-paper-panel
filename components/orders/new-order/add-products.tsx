@@ -6,28 +6,30 @@ export function AddProducts({
   products,
   quantity,
   customWidth,
+  selectedProductData,
+  customLinearSize,
+  customUnitPrice,
+  errors,
   setSelectedProduct,
   setQuantity,
   setCustomWidth,
   setCustomLinearSize,
-  selectedProductData,
-  customLinearSize,
   addProductToOrder,
-  customUnitPrice,
   setCustomUnitPrice,
 }: {
   selectedProduct: string;
   products: Products[];
+  errors: string[] | undefined;
   quantity: number;
   customWidth: string;
   customLinearSize: string;
   customUnitPrice: string;
+  selectedProductData: Products | undefined;
   setCustomLinearSize: React.Dispatch<React.SetStateAction<string>>;
   setSelectedProduct: React.Dispatch<React.SetStateAction<string>>;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   setCustomWidth: React.Dispatch<React.SetStateAction<string>>;
   addProductToOrder: () => void;
-  selectedProductData: Products | undefined;
   setCustomUnitPrice: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
@@ -131,6 +133,7 @@ export function AddProducts({
           Add to Order
         </button>
       </div>
+      {errors?.length && <p className="text-red-400 text-sm mt-1">{errors}</p>}
     </div>
   );
 }
