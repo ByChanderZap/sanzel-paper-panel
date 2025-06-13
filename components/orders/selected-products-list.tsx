@@ -11,21 +11,21 @@ import { OrderItemsWithProdsInfo } from "@/types/orders";
 
 export function SelectedProductsList({
   orderItems,
-  updateOrderItem,
+  // updateOrderItem,
   calculateItemTotal,
   removeProductFromOrder,
   orderTotal,
 }: {
   orderTotal: number;
   orderItems: OrderItemsWithProdsInfo[];
-  updateOrderItem: (itemId: string, field: string, value: number) => void;
+  // updateOrderItem: (itemId: string, field: string, value: number) => void;
   calculateItemTotal: (item: OrderItemsWithProdsInfo) => number;
   removeProductFromOrder: (itemId: string) => void;
 }) {
   return (
     <div className="lg:col-span-2">
-      <div className="bg-secondary rounded-3xl border border-gray-700 overflow-hidden">
-        <div className="p-6 border-b border-gray-700">
+      <div className="bg-primary rounded-3xl border border-gray-400 overflow-hidden">
+        <div className="p-6 border-b border-gray-400">
           <h3 className="text-custom-white text-lg font-medium">Products</h3>
         </div>
 
@@ -59,53 +59,23 @@ export function SelectedProductsList({
                     />
                     <TableRowContent
                       content={
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) =>
-                            updateOrderItem(
-                              item.id,
-                              "quantity",
-                              parseInt(e.target.value) || 1
-                            )
-                          }
-                          className="w-16 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
-                        />
+                        <div className="text-custom-white text-sm">
+                          {item.quantity}
+                        </div>
                       }
                     />
                     <TableRowContent
                       content={
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={item.width}
-                          onChange={(e) =>
-                            updateOrderItem(
-                              item.id,
-                              "width",
-                              parseFloat(e.target.value) || 0
-                            )
-                          }
-                          className="w-20 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
-                        />
+                        <div className="text-custom-white text-sm">
+                          {item.width}
+                        </div>
                       }
                     />
                     <TableRowContent
                       content={
-                        <input
-                          type="number"
-                          step="0.1"
-                          value={item.linear_size}
-                          onChange={(e) =>
-                            updateOrderItem(
-                              item.id,
-                              "linearSize",
-                              parseFloat(e.target.value) || 0
-                            )
-                          }
-                          className="w-20 px-2 py-1 bg-primary border border-gray-600 rounded-xl text-custom-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mx-auto"
-                        />
+                        <div className="text-custom-white text-sm">
+                          {item.linear_size}
+                        </div>
                       }
                     />
                     <TableRowContent
@@ -140,7 +110,7 @@ export function SelectedProductsList({
             </CustomTable>
 
             {/* Order Total */}
-            <div className="bg-gray-700 px-6 py-4 border-t border-gray-600 rounded-b-lg">
+            <div className="bg-primary px-6 py-4 border-t border-gray-400 rounded-b-lg">
               <div className="flex justify-between items-center">
                 <span className="text-lg font-semibold text-white">
                   Order Total:

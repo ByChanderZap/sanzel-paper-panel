@@ -1,29 +1,5 @@
 import { Plus } from "lucide-react";
-import { Products } from "@prisma/client";
-
-const mockProducts = [
-  {
-    id: "1",
-    name: "A4 Paper",
-    basePrice: 0.5,
-    defaultWidth: 21.0,
-    defaultLinearSize: 29.7,
-  },
-  {
-    id: "2",
-    name: "A3 Paper",
-    basePrice: 0.75,
-    defaultWidth: 29.7,
-    defaultLinearSize: 42.0,
-  },
-  {
-    id: "3",
-    name: "Envelopes",
-    basePrice: 0.2,
-    defaultWidth: 11.0,
-    defaultLinearSize: 22.0,
-  },
-];
+import { Products } from "@/types/orders";
 
 export function AddProducts({
   selectedProduct,
@@ -48,10 +24,10 @@ export function AddProducts({
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   setCustomWidth: React.Dispatch<React.SetStateAction<string>>;
   addProductToOrder: () => void;
-  selectedProductData: Products;
+  selectedProductData: Products | undefined;
 }) {
   return (
-    <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
+    <div className="bg-primary p-6 rounded-3xl border border-gray-400">
       <h3 className="text-custom-white text-lg font-medium mb-4">
         Add Products
       </h3>

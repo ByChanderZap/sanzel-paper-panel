@@ -1,50 +1,36 @@
 "use client";
 import React, { useState, useMemo, useActionState } from "react";
 
-import { OrderItemsWithProdsInfo } from "@/types/orders";
+import {
+  OrderFormState,
+  OrderItemsWithProdsInfo,
+  Products,
+} from "@/types/orders";
 import { SelectedProductsList } from "@/components/orders/selected-products-list";
-import { Clients, Products } from "@prisma/client";
+import { Clients, OrderStatus } from "@prisma/client";
 import { createOrderAction } from "@/actions/orders"; // You'll need to create this
 import { AddProducts } from "@/components/orders/new-order/add-products";
+import { OrderClientSelection } from "@/components/orders/new-order/client-selection";
 
-// Mock data - replace with your server actions
-const mockClients = [
-  { id: "1", name: "John Doe", email: "john@example.com" },
-  { id: "2", name: "Jane Smith", email: "jane@example.com" },
-  { id: "3", name: "Acme Corp", email: "contact@acme.com" },
-];
+const statusLabels: Record<OrderStatus, string> = {
+  PENDING: "Pending",
+  CONFIRMED: "Confirmed",
+  PROCESSING: "Processing",
+  SHIPPED: "Shipped",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+};
 
-const mockProducts = [
-  {
-    id: "1",
-    name: "A4 Paper",
-    basePrice: 0.5,
-    defaultWidth: 21.0,
-    defaultLinearSize: 29.7,
-  },
-  {
-    id: "2",
-    name: "A3 Paper",
-    basePrice: 0.75,
-    defaultWidth: 29.7,
-    defaultLinearSize: 42.0,
-  },
-  {
-    id: "3",
-    name: "Envelopes",
-    basePrice: 0.2,
-    defaultWidth: 11.0,
-    defaultLinearSize: 22.0,
-  },
-];
+const statusOptions = Object.values(OrderStatus).map((status) => ({
+  value: status,
+  label: statusLabels[status],
+}));
 
-const statusOptions = [
-  { value: "pending", label: "Pending" },
-  { value: "processing", label: "Processing" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
-];
-
+const initialState: OrderFormState = {
+  message: null,
+  success: null,
+  errors: {},
+};
 export function NewOrderFormContent({
   clients,
   products,
@@ -52,13 +38,10 @@ export function NewOrderFormContent({
   clients: Clients[];
   products: Products[];
 }) {
-  // Form state with useFormState for server actions
-  // console.log(products);
-  const [formState, formAction] = useActionState(createOrderAction, {
-    success: false,
-    message: "",
-    errors: {},
-  });
+  const [formState, formAction] = useActionState(
+    createOrderAction,
+    initialState
+  );
 
   const [selectedClient, setSelectedClient] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("pending");
@@ -76,8 +59,6 @@ export function NewOrderFormContent({
     [selectedProduct, products]
   );
 
-  console.log("SELECTED PRODUCT DATA");
-  console.log(selectedProductData);
   // Calculate item total
   const calculateItemTotal = (item: OrderItemsWithProdsInfo) => {
     const multiplier = (item.width * item.linear_size) / 1000; // Convert to m²
@@ -109,7 +90,9 @@ export function NewOrderFormContent({
       width: width,
       linear_size: linearSize,
       unit_price: selectedProductData.unit_price,
+      // Optional fields can be omitted during creation
     };
+
     setOrderItems([...orderItems, newItem]);
 
     // Reset form
@@ -124,17 +107,8 @@ export function NewOrderFormContent({
     setOrderItems(orderItems.filter((item) => item.id !== itemId));
   };
 
-  // Update order item
-  const updateOrderItem = (itemId: string, field: string, value: any) => {
-    setOrderItems(
-      orderItems.map((item) =>
-        item.id === itemId ? { ...item, [field]: value } : item
-      )
-    );
-  };
-
   return (
-    <div className="min-h-screen bg-primary p-6">
+    <div className="min-h-screen ">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-custom-white mb-8">
           Create New Order
@@ -172,30 +146,12 @@ export function NewOrderFormContent({
             {/* Left Column - Form Inputs */}
             <div className="lg:col-span-1 space-y-6">
               {/* Client Selection */}
-              <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
-                <label className="block text-custom-white text-lg font-medium mb-4">
-                  Client
-                </label>
-                <select
-                  name="clientSelect" // For accessibility, but we use hidden input for actual submission
-                  value={selectedClient}
-                  onChange={(e) => setSelectedClient(e.target.value)}
-                  className="w-full px-4 py-3 bg-primary border border-gray-600 rounded-2xl text-custom-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="">Select Client</option>
-                  {mockClients.map((client) => (
-                    <option key={client.id} value={client.id}>
-                      {client.name} {client.email && `(${client.email})`}
-                    </option>
-                  ))}
-                </select>
-                {formState.errors?.clientId && (
-                  <p className="text-red-400 text-sm mt-1">
-                    {formState.errors.clientId}
-                  </p>
-                )}
-              </div>
+              <OrderClientSelection
+                clients={clients}
+                formState={formState}
+                selectedClient={selectedClient}
+                setSelectedClient={setSelectedClient}
+              />
 
               {/* Add Products */}
               <AddProducts
@@ -213,7 +169,7 @@ export function NewOrderFormContent({
               />
 
               {/* Status Selection */}
-              <div className="bg-secondary p-6 rounded-3xl border border-gray-700">
+              <div className="bg-primary p-6 rounded-3xl border border-gray-400">
                 <label className="block text-custom-white text-lg font-medium mb-4">
                   Status
                 </label>
@@ -243,7 +199,7 @@ export function NewOrderFormContent({
               orderItems={orderItems}
               orderTotal={orderTotal}
               removeProductFromOrder={removeProductFromOrder}
-              updateOrderItem={updateOrderItem}
+              // updateOrderItem={updateOrderItem}
             />
           </div>
 
