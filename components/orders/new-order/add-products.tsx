@@ -13,18 +13,22 @@ export function AddProducts({
   selectedProductData,
   customLinearSize,
   addProductToOrder,
+  customUnitPrice,
+  setCustomUnitPrice,
 }: {
   selectedProduct: string;
   products: Products[];
   quantity: number;
   customWidth: string;
   customLinearSize: string;
+  customUnitPrice: string;
   setCustomLinearSize: React.Dispatch<React.SetStateAction<string>>;
   setSelectedProduct: React.Dispatch<React.SetStateAction<string>>;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   setCustomWidth: React.Dispatch<React.SetStateAction<string>>;
   addProductToOrder: () => void;
   selectedProductData: Products | undefined;
+  setCustomUnitPrice: React.Dispatch<React.SetStateAction<string>>;
 }) {
   return (
     <div className="bg-primary p-6 rounded-3xl border border-gray-400">
@@ -96,6 +100,24 @@ export function AddProducts({
               className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+        </div>
+
+        {/* Custom Unit Price */}
+        <div>
+          <label className="block text-custom-white text-sm font-medium mb-2">
+            Unit Price ($)
+          </label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            value={customUnitPrice}
+            onChange={(e) => setCustomUnitPrice(e.target.value)}
+            placeholder={
+              selectedProductData?.unit_price?.toString() || "Default"
+            }
+            className="w-full px-3 py-2 bg-primary border border-gray-600 rounded-2xl text-custom-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
 
         {/* Add Button */}

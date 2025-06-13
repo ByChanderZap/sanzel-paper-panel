@@ -52,6 +52,7 @@ export function NewOrderFormContent({
   const [quantity, setQuantity] = useState(1);
   const [customWidth, setCustomWidth] = useState("");
   const [customLinearSize, setCustomLinearSize] = useState("");
+  const [customUnitPrice, setCustomUnitPrice] = useState("");
 
   // Get selected product details
   const selectedProductData = useMemo(
@@ -61,7 +62,7 @@ export function NewOrderFormContent({
 
   // Calculate item total
   const calculateItemTotal = (item: OrderItemsWithProdsInfo) => {
-    const multiplier = (item.width * item.linear_size) / 1000; // Convert to m²
+    const multiplier = (item.width * item.linear_size) / 100; // Convert to m²
     return item.quantity * item.unit_price * multiplier;
   };
 
@@ -82,6 +83,10 @@ export function NewOrderFormContent({
       ? parseFloat(customLinearSize)
       : selectedProductData.linear_size;
 
+    const unitPrice = customUnitPrice
+      ? parseFloat(customUnitPrice)
+      : selectedProductData.unit_price;
+
     const newItem: OrderItemsWithProdsInfo = {
       id: Date.now().toString(),
       productId: selectedProductData.id,
@@ -89,7 +94,7 @@ export function NewOrderFormContent({
       quantity: quantity,
       width: width,
       linear_size: linearSize,
-      unit_price: selectedProductData.unit_price,
+      unit_price: unitPrice,
       // Optional fields can be omitted during creation
     };
 
@@ -100,6 +105,7 @@ export function NewOrderFormContent({
     setQuantity(1);
     setCustomWidth("");
     setCustomLinearSize("");
+    setCustomUnitPrice("");
   };
 
   // Remove product from order
@@ -166,6 +172,8 @@ export function NewOrderFormContent({
                 setCustomWidth={setCustomWidth}
                 setQuantity={setQuantity}
                 setSelectedProduct={setSelectedProduct}
+                setCustomUnitPrice={setCustomUnitPrice}
+                customUnitPrice={customUnitPrice}
               />
 
               {/* Status Selection */}
