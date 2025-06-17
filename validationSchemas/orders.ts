@@ -18,3 +18,8 @@ export const CreateOrderSchema = z.object({
   orderItems: z.array(OrderItemSchema).min(1, 'At least one order item is required'),
   orderTotal: z.number().positive('Order total must be positive')
 }).strict()
+
+export const UpdateOrderStatus = z.object({
+  id: z.string().min(1, 'Invalid order ID'),
+  status: z.enum(['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'])
+})

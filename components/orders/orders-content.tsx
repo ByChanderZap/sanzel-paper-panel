@@ -1,19 +1,19 @@
 import { OrdersTableProps } from "@/types/orders";
-import { getOrdersPreview } from "@/lib/data/fetchOrders";
 import { OrdersTable } from "@/components/orders/orders-table";
 import { MobileOrdersTable } from "@/components/orders/mobile-orders-table";
+import { getOrdersSummary } from "@/lib/orders/orders";
 
 export async function OrdersPageContent({
   query,
   currentPage = 1,
 }: OrdersTableProps) {
-  const orders = await getOrdersPreview(query, currentPage);
+  const orders = await getOrdersSummary(query, currentPage);
 
   return (
     <>
-      <OrdersTable orders={orders} />
+      <OrdersTable ordersSummary={orders} />
 
-      <MobileOrdersTable orders={orders} />
+      <MobileOrdersTable ordersSummary={orders} />
     </>
   );
 }

@@ -2,6 +2,8 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { SearchBar } from "@/components/search-bar";
 import { OrdersPageContent } from "@/components/orders/orders-content";
+import { Pagination } from "@/components/pagination";
+import { fetchOrdersTotalPages } from "@/lib/orders/orders";
 
 export default async function OrdersPage({
   searchParams,
@@ -11,7 +13,7 @@ export default async function OrdersPage({
   const params = await searchParams;
   const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;
-
+  const totalPages = await fetchOrdersTotalPages(query);
   return (
     <>
       {/* Header */}
@@ -29,6 +31,7 @@ export default async function OrdersPage({
       <SearchBar placeholder="Search orders..." />
 
       <OrdersPageContent query={query} currentPage={currentPage} />
+      <Pagination totalPages={totalPages} />
     </>
   );
 }

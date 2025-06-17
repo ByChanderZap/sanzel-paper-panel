@@ -22,11 +22,5 @@ export function TableRow({
 
   const gridCols = gridColsMap[colCount] || "grid-cols-6";
 
-  return (
-    <div
-      className={`grid ${gridCols} gap-4 py-4 text-center border-b border-gray-700 hover:bg-gray-700/50 transition-colors`}
-    >
-      {children}
-    </div>
-  );
+  return <div className={`grid ${gridCols}`}>{children}</div>;
 }

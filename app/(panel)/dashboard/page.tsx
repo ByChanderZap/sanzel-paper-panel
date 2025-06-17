@@ -4,8 +4,8 @@ import { TableBody } from "@/components/custom-table/table-body";
 import { TableRow } from "@/components/custom-table/table-row";
 import { TableRowContent } from "@/components/custom-table/table-row-content";
 import MobileCard from "@/components/mobile-card";
-import { getOrdersPreview } from "@/lib/data/fetchOrders";
 import MobileCardLayout from "@/components/mobile-card-layout";
+import { getOrdersSummary } from "@/lib/orders/orders";
 
 export default async function DashboardPage() {
   const stats = [
@@ -16,7 +16,7 @@ export default async function DashboardPage() {
 
   const colNames = ["Order ID", "Client", "Date", "Status", "Total"];
 
-  const recentOrders = await getOrdersPreview();
+  const recentOrders = await getOrdersSummary();
 
   return (
     <>
@@ -48,11 +48,11 @@ export default async function DashboardPage() {
               <TableRow key={order.id} colCount={colNames.length}>
                 <TableRowContent content={order.id} className="font-medium" />
                 <TableRowContent
-                  content={order.client}
+                  content={order.client.name}
                   className="text-custom-gray"
                 />
                 <TableRowContent
-                  content={order.date}
+                  content={order.createdAt.toDateString()}
                   className="text-custom-gray"
                 />
                 <TableRowContent
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
                   }
                 />
                 <TableRowContent
-                  content={order.total}
+                  content={order.price}
                   className="font-medium text-lg"
                 />
               </TableRow>

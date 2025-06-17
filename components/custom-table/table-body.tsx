@@ -1,3 +1,3 @@
 export function TableBody({ children }: { children: React.ReactNode }) {
-  return <div className="space-y-0">{children}</div>;
+  return <div className="divide-y divide-gray-700">{children}</div>;
 }

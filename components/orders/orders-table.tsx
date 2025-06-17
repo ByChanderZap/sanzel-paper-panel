@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { TempOrderType } from "@/types/orders";
+// import { TempOrderType } from "@/types/orders";
 import {
   CustomTable,
   TableHeader,
@@ -7,15 +7,20 @@ import {
   TableRow,
   TableRowContent,
 } from "@/components/custom-table";
+import { OrdersPreview } from "@/types/orders";
 
-export async function OrdersTable({ orders }: { orders: TempOrderType[] }) {
+export async function OrdersTable({
+  ordersSummary,
+}: {
+  ordersSummary: OrdersPreview[];
+}) {
   const colNames = ["Order Id", "Client", "Date", "Status", "Total"];
 
   return (
     <CustomTable>
       <TableHeader colNames={colNames} />
       <TableBody>
-        {orders.map((order) => (
+        {ordersSummary.map((order) => (
           <Link
             key={order.id}
             href={`/orders/${order.id}/summary`}
@@ -24,11 +29,11 @@ export async function OrdersTable({ orders }: { orders: TempOrderType[] }) {
             <TableRow colCount={colNames.length}>
               <TableRowContent content={order.id} className="font-medium" />
               <TableRowContent
-                content={order.client}
+                content={order.client.name}
                 className="text-custom-gray"
               />
               <TableRowContent
-                content={order.date}
+                content={order.createdAt.toDateString()}
                 className="text-custom-gray"
               />
               <TableRowContent
@@ -39,13 +44,13 @@ export async function OrdersTable({ orders }: { orders: TempOrderType[] }) {
                 }
               />
               <TableRowContent
-                content={`$${order.total.toFixed(2)}`}
+                content={`$${order.price}`}
                 className="font-medium"
               />
             </TableRow>
           </Link>
         ))}
-        {orders.length === 0 && (
+        {ordersSummary.length === 0 && (
           <div className="text-center py-8 text-gray-400">
             No orders found matching your search.
           </div>

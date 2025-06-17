@@ -17,11 +17,12 @@ export function TableHeader({ colNames }: { colNames: string[] }) {
   const gridCols = gridColsMap[colNames.length] || "grid-cols-6";
 
   return (
-    <div
-      className={`grid ${gridCols} gap-4 bg-secondary px-4 py-3 rounded-t-2xl`}
-    >
+    <div className={`grid ${gridCols} border-b border-gray-700`}>
       {colNames.map((colName, index) => (
-        <div key={index} className="text-center font-medium text-custom-white">
+        <div
+          key={index}
+          className="text-left py-3 px-4 font-medium text-gray-400"
+        >
           {colName}
         </div>
       ))}

@@ -1,8 +1,9 @@
 "use server"
 
-import { OrderFormState } from "@/types/orders"
-import { CreateOrderSchema } from "@/validationSchemas/orders"
-import { validateAndCreateOrderDetailed } from "@/lib/orders/orders"
+import { OrderFormState, OrderStatusFormState } from "@/types/orders"
+import { CreateOrderSchema, UpdateOrderStatus } from "@/validationSchemas/orders"
+import { updateOrderStatus, validateAndCreateOrderDetailed } from "@/lib/orders/orders"
+import { revalidatePath } from "next/cache.js"
 
 export const createOrderAction = async (prevState: OrderFormState, formData: FormData): Promise<OrderFormState> => {
 
@@ -18,7 +19,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
       unit_price: parseFloat(item.unit_price),
       itemTotal: parseFloat(item.itemTotal)
     }))
-    console.log(parsedOrderItems)
+
     const validatedFields = await CreateOrderSchema.safeParseAsync({
       clientId: formData.get('clientId'),
       status: formData.get('status')?.toString().toUpperCase() as string,
@@ -29,7 +30,6 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
     
     
     if (!validatedFields.success) {
-      console.log('am i here?')
       return {
         ...prevState,
         errors: validatedFields.error.flatten().fieldErrors,
@@ -66,6 +66,38 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
       message: 'Failed to create order',
       success: false,
       errors: {}
+    }
+  }
+}
+
+export const updateOrderStatusAction = async (prevState: OrderStatusFormState, formData: FormData): Promise<OrderStatusFormState> => {
+  const validatedFields = await UpdateOrderStatus.safeParseAsync({
+    id: formData.get('id'),
+    status: formData.get('status')
+  })
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: 'Validation error'
+    }
+  }
+
+  const { data } = validatedFields
+  try {
+    await updateOrderStatus(data.id, data.status)
+    revalidatePath('/orders')
+    revalidatePath(`/orders/${data.id}/summary`)
+    return {
+      message: "Status updated successfully",
+      success: true
+    }
+  } catch(error) {
+    console.error(error)
+    return {
+      message: "Something went wrong while updating the status",
+      success: false
     }
   }
 }

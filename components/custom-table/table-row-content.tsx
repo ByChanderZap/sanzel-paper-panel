@@ -7,5 +7,9 @@ export function TableRowContent({
   content,
   className = "",
 }: TableRowContentProps) {
-  return <div className={className}>{content}</div>;
+  return (
+    <div className={`py-4 px-4 text-gray-300 truncate ${className}`}>
+      {content}
+    </div>
+  );
 }

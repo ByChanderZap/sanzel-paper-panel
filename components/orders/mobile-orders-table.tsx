@@ -1,16 +1,16 @@
 import Link from "next/link";
-import { TempOrderType } from "@/types/orders";
 import MobileCard from "@/components/mobile-card";
 import MobileCardLayout from "@/components/mobile-card-layout";
+import { OrdersPreview } from "@/types/orders";
 
 export async function MobileOrdersTable({
-  orders,
+  ordersSummary,
 }: {
-  orders: TempOrderType[];
+  ordersSummary: OrdersPreview[];
 }) {
   return (
     <MobileCardLayout>
-      {orders.map((order) => (
+      {ordersSummary.map((order) => (
         <Link
           key={order.id}
           href={`/orders/${order.id}/summary`}
@@ -20,7 +20,7 @@ export async function MobileOrdersTable({
         </Link>
       ))}
 
-      {orders.length === 0 && (
+      {ordersSummary.length === 0 && (
         <div className="bg-primary rounded-2xl p-8 text-center text-gray-400">
           No orders found matching your search.
         </div>

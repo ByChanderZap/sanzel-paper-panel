@@ -1,5 +1,6 @@
-import { CreateOrderData } from "@/types/orders";
+import { CreateOrderData, DetailedOrder, OrdersPreview } from "@/types/orders";
 import { db } from "@/lib/db";
+import { OrderStatus, Prisma } from "@prisma/client";
 // import { Orders } from "@prisma/client";
 
 export const createOrderWithItems = async (data: CreateOrderData) => {
@@ -86,4 +87,73 @@ export const validateAndCreateOrderDetailed = async (
 
     throw error
   }
+}
+
+const PAGE_SIZE = 10;
+
+export const getOrdersSummary = async (query?: string, page: number = 1): Promise<OrdersPreview[]> => {
+  const where: Prisma.OrdersWhereInput = { deletedAt: null }
+
+  if (query) {
+    where.OR = [
+      { client: { name: { contains: query, mode: "insensitive" }}},
+      { client: { city: { contains: query, mode: "insensitive" }}},
+      { client: { email: { contains: query, mode: "insensitive"}}},
+      { client: { phone: { contains: query, mode: "insensitive" }}},
+    ]
+  }
+
+  const orders = await db.orders.findMany({
+    where,
+    skip: (page - 1) * PAGE_SIZE,
+    take: PAGE_SIZE,
+    orderBy: { createdAt: "desc" },
+    include: {
+      client: { select: { name: true } }
+    }
+  })
+  
+  return orders
+} 
+
+export const fetchOrdersTotalPages = async(query?: string): Promise<number> => {
+  const where: Prisma.OrdersWhereInput = { deletedAt: null }
+
+  if (query) {
+    where.OR = [
+      { client: { name: { contains: query, mode: "insensitive" }}},
+      { client: { city: { contains: query, mode: "insensitive" }}},
+      { client: { email: { contains: query, mode: "insensitive"}}},
+      { client: { phone: { contains: query, mode: "insensitive" }}},
+    ]
+  }
+
+  const count = await db.orders.count({where})
+  const totalPage = Math.ceil(count / PAGE_SIZE)
+  return totalPage
+}
+
+export const fetchDetailedOrderById = async (id: string): Promise<DetailedOrder | null> => {
+  return await db.orders.findFirst({
+    where: {
+      id: id
+    },
+    include: {
+      client: {},
+      orderItems: {
+        include: {
+          product: {}
+        }
+      }
+    }
+  }) 
+}
+
+export const updateOrderStatus = async (id: string, status: OrderStatus) => {
+  return await db.orders.update({
+    where: { id: id },
+    data: {
+      status: status
+    }
+  })
 }

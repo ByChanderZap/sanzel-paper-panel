@@ -1,22 +1,26 @@
-import { $Enums, OrderStatus } from "@prisma/client";
+import { $Enums, Orders, OrderStatus, Prisma } from "@prisma/client";
 
 export type OrdersTableProps = {
   query: string;
   currentPage?: number;
 };
 
-export type TempOrderType = {
-  id: string;
-  client: string;
-  date: string;
-  total: number;
-  status: "delivered" | "pending" | "cancelled";
-  // material_name?: string;
-  // quantity?: number;
-  // coil_height?: number;
-  // coil_length?: number;
-  // square_meters?: number;
-}
+// export type TempOrderType = {
+//   id: string;
+//   client: string;
+//   date: string;
+//   total: number;
+//   status: "delivered" | "pending" | "cancelled";
+//   // material_name?: string;
+//   // quantity?: number;
+//   // coil_height?: number;
+//   // coil_length?: number;
+//   // square_meters?: number;
+// }
+
+export type OrdersPreview = ({
+  client: { name: string }
+} & Orders)
 
 export type OrderItems = {
   id: string;
@@ -75,6 +79,14 @@ export interface OrderFormState {
   };
 }
 
+export interface OrderStatusFormState {
+  success?: boolean;
+  message?: string;
+  errors?: {
+    status?: string[]
+  }
+}
+
 export interface CreateOrderData {
   clientId: string
   orderTotal: number
@@ -90,3 +102,14 @@ export interface CreateOrderItemData {
   width: number
   linear_size: number
 }
+
+export type DetailedOrder = Prisma.OrdersGetPayload<{
+  include: {
+    client: true;
+    orderItems: {
+      include: {
+        product: true;
+      };
+    };
+  };
+}>;
