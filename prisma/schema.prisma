@@ -65,6 +65,7 @@ model OrderItems {
   productId   String
   quantity    Int
   unit_price  Int           // Price at time of order (can differ from product base price)
+  item_total  Float         // calculation made using width linear size, unit price and quantity
   width       Float         // Width at time of order (can differ from product base width)
   linear_size Float         // Linear size at time of order (can differ from product base linear_size)
   createdAt   DateTime      @default(now())
@@ -74,7 +75,7 @@ model OrderItems {
   order       Orders        @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product     Products      @relation(fields: [productId], references: [id])
   
-  @@unique([orderId, productId])
+  @@unique([orderId, productId, id])
 }
 
 enum OrderStatus {

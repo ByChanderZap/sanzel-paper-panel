@@ -87,6 +87,10 @@ export function NewOrderFormContent({
       ? parseFloat(customUnitPrice)
       : selectedProductData.unit_price;
 
+    // Calculate item total
+    const multiplier = (width * linearSize) / 100;
+    const itemTotal = quantity * unitPrice * multiplier;
+
     const newItem: OrderItemsWithProdsInfo = {
       id: Date.now().toString(),
       productId: selectedProductData.id,
@@ -95,6 +99,7 @@ export function NewOrderFormContent({
       width: width,
       linear_size: linearSize,
       unit_price: unitPrice,
+      itemTotal: parseFloat(itemTotal.toFixed(2)),
       // Optional fields can be omitted during creation
     };
 
@@ -191,7 +196,7 @@ export function NewOrderFormContent({
 
             {/* Right Column - Products Table */}
             <SelectedProductsList
-              calculateItemTotal={calculateItemTotal}
+              // calculateItemTotal={calculateItemTotal}
               orderItems={orderItems}
               orderTotal={orderTotal}
               removeProductFromOrder={removeProductFromOrder}

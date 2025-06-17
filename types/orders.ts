@@ -1,4 +1,4 @@
-import { $Enums } from "@prisma/client";
+import { $Enums, OrderStatus } from "@prisma/client";
 
 export type OrdersTableProps = {
   query: string;
@@ -61,6 +61,7 @@ export type OrderItemsWithProdsInfo = {
   description?: string | null;
   quality?: $Enums.PaperQuality;
   stock?: number;
+  itemTotal?: number;
 }
 
 export interface OrderFormState {
@@ -72,4 +73,20 @@ export interface OrderFormState {
     orderItems?: string[];
     orderTotal?: string[];
   };
+}
+
+export interface CreateOrderData {
+  clientId: string
+  orderTotal: number
+  status: OrderStatus
+  orderItems: CreateOrderItemData[]
+}
+
+export interface CreateOrderItemData {
+  productId: string
+  quantity: number
+  unit_price: number // This should be in cents/integer format
+  item_total: number
+  width: number
+  linear_size: number
 }

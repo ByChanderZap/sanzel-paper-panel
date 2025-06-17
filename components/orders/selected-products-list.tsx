@@ -12,14 +12,14 @@ import { OrderItemsWithProdsInfo } from "@/types/orders";
 export function SelectedProductsList({
   orderItems,
   // updateOrderItem,
-  calculateItemTotal,
-  removeProductFromOrder,
+  // calculateItemTotal,
   orderTotal,
+  removeProductFromOrder,
 }: {
   orderTotal: number;
   orderItems: OrderItemsWithProdsInfo[];
   // updateOrderItem: (itemId: string, field: string, value: number) => void;
-  calculateItemTotal: (item: OrderItemsWithProdsInfo) => number;
+  // calculateItemTotal: (item: OrderItemsWithProdsInfo) => number;
   removeProductFromOrder: (itemId: string) => void;
 }) {
   return (
@@ -88,7 +88,8 @@ export function SelectedProductsList({
                     <TableRowContent
                       content={
                         <div className="text-custom-white font-semibold text-sm">
-                          ${calculateItemTotal(item).toFixed(2)}
+                          {/* ${calculateItemTotal(item).toFixed(2)} */}
+                          {item.itemTotal?.toFixed(2)}
                         </div>
                       }
                     />
