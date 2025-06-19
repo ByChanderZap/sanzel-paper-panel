@@ -44,3 +44,9 @@ export const fetchProductsTotalPages = async (query?: string): Promise<number> =
   const totalPages = Math.ceil(count / PAGE_SIZE);
   return totalPages;
 };
+
+export const getTotalProducts = async () => {
+  return await db.products.count({
+    where: { deletedAt: null }
+  })
+}

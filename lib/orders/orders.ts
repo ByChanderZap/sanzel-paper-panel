@@ -157,3 +157,9 @@ export const updateOrderStatus = async (id: string, status: OrderStatus) => {
     }
   })
 }
+
+export const getTotalOrders = async () => {
+  return await db.orders.count({
+    where: { deletedAt: null }
+  })
+}

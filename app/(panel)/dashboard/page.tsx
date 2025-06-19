@@ -6,18 +6,13 @@ import { TableRowContent } from "@/components/custom-table/table-row-content";
 import MobileCard from "@/components/mobile-card";
 import MobileCardLayout from "@/components/mobile-card-layout";
 import { getOrdersSummary } from "@/lib/orders/orders";
+import { getStats } from "@/lib/dashboard/dashboard";
 
 export default async function DashboardPage() {
-  const stats = [
-    { title: "Total Orders", value: 1234 },
-    { title: "Total Clients", value: 3333 },
-    { title: "Total Products", value: 500 },
-  ];
-
   const colNames = ["Order ID", "Client", "Date", "Status", "Total"];
 
   const recentOrders = await getOrdersSummary();
-
+  const stats = await getStats();
   return (
     <>
       <div className="mb-8">
