@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation.js";
 import { Home, Package, Users, BarChart3, FileText, X } from "lucide-react";
 import Link from "next/link.js";
 import SanzelNoBackground from "@/public/sanzel-no-background.png";
+import { UserButton } from "@clerk/nextjs";
 
 interface SidebarProps {
   onClose?: () => void;
@@ -23,11 +24,6 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
 
   const isActive = (href: string) => {
     return pathname === href || (pathname === "/" && href === "/dashboard");
-  };
-
-  const handleCloseSession = () => {
-    console.log("closing session");
-    onClose?.(); // Close sidebar on mobile after action
   };
 
   const handleNavClick = () => {
@@ -77,7 +73,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
         })}
       </nav>
 
-      <div className="absolute bottom-6 left-6 right-6">
+      {/* <div className="absolute bottom-6 left-6 right-6">
         <button
           onClick={handleCloseSession}
           className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors w-full"
@@ -85,6 +81,21 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
           <X size={20} />
           <span>Close Session</span>
         </button>
+      </div> */}
+      <div className="absolute bottom-6 left-6 right-6">
+        <div className="flex items-center space-x-3 px-4 py-4 rounded-lg bg-secondary/50">
+          <UserButton
+            appearance={{
+              elements: {
+                avatarBox: "w-8 h-8 cursor-pointer",
+                userButtonPopoverCard: "bg-gray-800 border-gray-700",
+                userButtonPopoverActionButton:
+                  "text-gray-300 hover:text-white hover:bg-gray-700",
+              },
+            }}
+          />
+          <span>Account</span>
+        </div>
       </div>
     </div>
   );
