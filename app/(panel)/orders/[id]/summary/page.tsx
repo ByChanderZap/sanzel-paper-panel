@@ -5,39 +5,12 @@ import { OrderSummaryHeader } from "./components/header";
 import { LeftOrderSummaryColumn } from "./components/left-column";
 
 type SummaryPageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export default async function OrderDetailsPage({ params }: SummaryPageProps) {
   const { id } = await params;
   const orderData = await fetchDetailedOrderById(id);
-  // console.log(orderData);
-
-  // const [selectedStatus, setSelectedStatus] = useState("PENDING");
-  // const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
-
-  // const statusOptions = [
-  //   { value: "PENDING", label: "Pending", color: "bg-yellow-500" },
-  //   { value: "PROCESSING", label: "Processing", color: "bg-blue-500" },
-  //   { value: "SHIPPED", label: "Shipped", color: "bg-purple-500" },
-  //   { value: "DELIVERED", label: "Delivered", color: "bg-green-500" },
-  //   { value: "CANCELLED", label: "Cancelled", color: "bg-red-500" },
-  // ];
-
-  // const handleStatusChange = (status) => {
-  //   setSelectedStatus(status);
-  //   setIsStatusDropdownOpen(false);
-  // };
-
-  // const handleUpdateStatus = () => {
-  //   console.log("Updating status to:", selectedStatus);
-  //   // Add your status update logic here
-  // };
-
-  // const getCurrentStatusColor = () => {
-  //   const status = statusOptions.find((s) => s.value === selectedStatus);
-  //   return status ? status.color : "bg-gray-500";
-  // };
 
   return (
     <div className="min-h-screen bg-primary text-white p-8">

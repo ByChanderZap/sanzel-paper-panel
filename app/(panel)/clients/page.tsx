@@ -5,11 +5,16 @@ import { SearchBar } from "@/components/search-bar";
 import { fetchClientsTotalPages } from "@/lib/clients/clients";
 import { Pagination } from "@/components/pagination";
 
-export default async function ClientsPage({
-  searchParams,
-}: {
-  searchParams: { query?: string; page?: string };
-}) {
+type SearchParams = Promise<{
+  query?: string;
+  page?: string;
+}>;
+
+interface PageProps {
+  searchParams: SearchParams;
+}
+
+export default async function ClientsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query = params.query || "";
   const currentPage = Number(params.page) || 1;

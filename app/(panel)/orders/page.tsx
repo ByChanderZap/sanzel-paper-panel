@@ -5,11 +5,16 @@ import { OrdersPageContent } from "@/components/orders/orders-content";
 import { Pagination } from "@/components/pagination";
 import { fetchOrdersTotalPages } from "@/lib/orders/orders";
 
-export default async function OrdersPage({
-  searchParams,
-}: {
-  searchParams: { query?: string; page?: string };
-}) {
+type SearchParams = Promise<{
+  query?: string;
+  page?: string;
+}>;
+
+interface PageProps {
+  searchParams: SearchParams;
+}
+
+export default async function OrdersPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;

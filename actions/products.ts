@@ -4,6 +4,7 @@ import { ProductsFormState } from "@/types/products"
 import { NewProductSchema } from "@/validationSchemas/products"
 import { createProduct } from "@/lib/products/products"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export async function newProduct(prevState: ProductsFormState, formData: FormData): Promise<ProductsFormState> {
   const validatedFields = await NewProductSchema.safeParseAsync({
@@ -34,5 +35,6 @@ export async function newProduct(prevState: ProductsFormState, formData: FormDat
       errorMessage: 'Error while trying to create product.'
     }
   }
+  revalidatePath('/products')
   redirect('/products')
 }

@@ -4,6 +4,7 @@ import { ClientsFormState } from "@/types/clients"
 import { NewClientSchema } from "@/validationSchemas/clients"
 import { createClient } from "@/lib/clients/clients"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export async function newClient(prevState: ClientsFormState, formData: FormData): Promise<ClientsFormState> {
   const validatedFields = await NewClientSchema.safeParseAsync({
@@ -34,6 +35,7 @@ export async function newClient(prevState: ClientsFormState, formData: FormData)
     }
   }
 
+  revalidatePath('/clients')
   redirect('/clients')
 }
 

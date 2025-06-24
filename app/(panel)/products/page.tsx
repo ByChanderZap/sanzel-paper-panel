@@ -5,11 +5,16 @@ import { ProductsPageContent } from "@/components/products/products-content";
 import { fetchProductsTotalPages } from "@/lib/products/products";
 import { Pagination } from "@/components/pagination";
 
-export default async function ProductsPage({
-  searchParams,
-}: {
-  searchParams: { query?: string; page?: string };
-}) {
+type SearchParams = Promise<{
+  query?: string;
+  page?: string;
+}>;
+
+interface PageProps {
+  searchParams: SearchParams;
+}
+
+export default async function ProductsPage({ searchParams }: PageProps) {
   const params = await searchParams;
   const query = params?.query || "";
   const currentPage = Number(params?.page) || 1;
