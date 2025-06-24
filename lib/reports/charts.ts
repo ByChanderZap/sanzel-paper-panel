@@ -57,7 +57,7 @@ export const getMonthlySales = async (year?: number, monthsBack: number = 12) =>
 export const getMonthlyRevenue = async () => {
   const currentYear = new Date().getFullYear()
   const monthlyData = await getMonthlySales(currentYear,1)
-  return monthlyData[0].revenue
+  return monthlyData[0]?.revenue
 }
 
 export const getCurrentMonthRevenue = async () => {

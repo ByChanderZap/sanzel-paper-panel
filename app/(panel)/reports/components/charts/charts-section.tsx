@@ -19,8 +19,8 @@ export async function ChartsSection() {
       {/* KPI cards */}
       <KPICards
         data={{
-          totalRevenue: monthlyRevenue,
-          totalOrders: totalOrders,
+          totalRevenue: monthlyRevenue || 0,
+          totalOrders: totalOrders || 0,
         }}
       />
 
