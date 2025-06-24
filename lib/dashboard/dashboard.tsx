@@ -8,7 +8,6 @@ export interface DashboardStat {
 }
 
 export const getStats = async (): Promise<DashboardStat[]> => {
-  // Execute all database calls in parallel for better performance
   const [ordersResult, clientsResult, productsResult] =
     await Promise.allSettled([
       getTotalOrders(),

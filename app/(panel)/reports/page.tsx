@@ -1,8 +1,18 @@
+import { ChartsSection } from "./components/charts/charts-section";
+import { ReportsHeader } from "./components/header";
+import { ReportGenerationSection } from "./components/report-generation";
+
 export default function ReportsPage() {
   return (
-    <div>
-      <h1>Reports</h1>
-      <p>this is the reports page</p>
+    <div className="p-8 min-h-screen text-white">
+      {/* Header */}
+      <ReportsHeader />
+
+      {/* Report Generation Section */}
+      <ReportGenerationSection />
+
+      {/* Report Preview Section */}
+      <ChartsSection />
     </div>
   );
 }
