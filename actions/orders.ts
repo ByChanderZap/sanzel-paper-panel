@@ -3,7 +3,8 @@
 import { OrderFormState, OrderStatusFormState } from "@/types/orders"
 import { CreateOrderSchema, UpdateOrderStatus } from "@/validationSchemas/orders"
 import { updateOrderStatus, validateAndCreateOrderDetailed } from "@/lib/orders/orders"
-import { revalidatePath } from "next/cache.js"
+import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export const createOrderAction = async (prevState: OrderFormState, formData: FormData): Promise<OrderFormState> => {
 
@@ -37,7 +38,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
       }
     }
     const { data } = validatedFields
-    const result = await validateAndCreateOrderDetailed({
+    await validateAndCreateOrderDetailed({
       clientId: data.clientId,
       orderTotal: data.orderTotal,
       status: data.status,
@@ -51,23 +52,23 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
       }))
     })
 
-    console.log('Order created successfully:', result.id)
-
-     return {
-      ...prevState,
-      message: 'Order created successfully',
-      success: true,
-      errors: {}
+    //  return {
+      //   ...prevState,
+      //   message: 'Order created successfully',
+      //   success: true,
+      //   errors: {}
+      // }
+    } catch(error) {
+      console.error("Error while creating order:", error)
+      return {
+        ...prevState,
+        message: 'Failed to create order',
+        success: false,
+        errors: {}
+      }
     }
-  } catch(error) {
-    console.error("Error while creating order:", error)
-    return {
-      ...prevState,
-      message: 'Failed to create order',
-      success: false,
-      errors: {}
-    }
-  }
+    revalidatePath('/orders')
+    redirect('/orders')
 }
 
 export const updateOrderStatusAction = async (prevState: OrderStatusFormState, formData: FormData): Promise<OrderStatusFormState> => {

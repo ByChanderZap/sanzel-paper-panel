@@ -16,9 +16,9 @@ export async function ClientsTable({
   const colNames = [
     "Client",
     "Email",
-    "Orders",
+    "Phone Number",
     "Total Spent",
-    "Status",
+    "Total Orders",
     "LastOrder",
   ];
 
@@ -47,12 +47,12 @@ export async function ClientsTable({
                   className="text-custom-gray"
                 />
                 <TableRowContent
-                  content={client.totalOrders}
-                  className="text-custom-gray"
-                />
-                <TableRowContent
                   content={client.totalSpent}
                   className="text-custom-white"
+                />
+                <TableRowContent
+                  content={client.totalOrders}
+                  className="text-custom-gray"
                 />
                 <TableRowContent
                   content={

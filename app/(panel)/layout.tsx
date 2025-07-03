@@ -1,3 +1,4 @@
+// PanelLayout.tsx
 "use client";
 
 import { Sidebar } from "@/components/layout/sidebar";
@@ -31,19 +32,20 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
             />
           )}
 
-          {/* Sidebar */}
+          {/* Sidebar - Fixed on desktop, mobile overlay */}
           <div
             className={`
-            fixed md:relative inset-y-0 left-0 z-50 
+            fixed md:sticky md:top-0 inset-y-0 left-0 z-50 
             transform ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} 
             md:translate-x-0 transition-transform duration-200 ease-in-out
+            md:h-screen
             `}
           >
             <Sidebar onClose={() => setSidebarOpen(false)} />
           </div>
 
           {/* Main content */}
-          <div className="flex-1 p-4 md:p-8">
+          <div className="flex-1 p-4 md:p-8 md:ml-0">
             {/* Add top padding on mobile to account for hamburger button */}
             <div className="pt-12 md:pt-0">{children}</div>
           </div>

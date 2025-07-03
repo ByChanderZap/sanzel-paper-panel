@@ -32,27 +32,31 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
   };
 
   return (
-    <div className="w-64 bg-primary p-6 relative h-full">
-      {/* Mobile close button */}
-      <button
-        onClick={onClose}
-        className="md:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-secondary transition-colors"
-      >
-        <X size={20} />
-      </button>
+    <div className="w-64 bg-primary h-full flex flex-col overflow-hidden">
+      {/* Header section */}
+      <div className="p-6 flex-shrink-0">
+        {/* Mobile close button */}
+        <button
+          onClick={onClose}
+          className="md:hidden absolute top-4 right-4 p-2 rounded-lg hover:bg-secondary transition-colors"
+        >
+          <X size={20} />
+        </button>
 
-      <div className="mb-8">
-        <Image
-          alt="Logo"
-          src={SanzelNoBackground.src}
-          width={SanzelNoBackground.width}
-          height={SanzelNoBackground.height}
-          priority
-          className="h-12 w-auto mx-auto"
-        />
+        <div className="mb-8">
+          <Image
+            alt="Logo"
+            src={SanzelNoBackground.src}
+            width={SanzelNoBackground.width}
+            height={SanzelNoBackground.height}
+            priority
+            className="h-12 w-auto mx-auto"
+          />
+        </div>
       </div>
 
-      <nav>
+      {/* Navigation section - scrollable if needed */}
+      <nav className="flex-1 px-6 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -60,7 +64,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
               key={item.name}
               href={item.href}
               onClick={handleNavClick}
-              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors ${
+              className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-colors mb-2 ${
                 isActive(item.href)
                   ? "bg-secondary text-custom-white"
                   : "text-gray-300 hover:bg-secondary hover:text-custom-white"
@@ -73,16 +77,8 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
         })}
       </nav>
 
-      {/* <div className="absolute bottom-6 left-6 right-6">
-        <button
-          onClick={handleCloseSession}
-          className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors w-full"
-        >
-          <X size={20} />
-          <span>Close Session</span>
-        </button>
-      </div> */}
-      <div className="absolute bottom-6 left-6 right-6">
+      {/* Footer section - always at bottom */}
+      <div className="p-6 flex-shrink-0">
         <div className="flex items-center space-x-3 px-4 py-4 rounded-lg bg-secondary/50">
           <UserButton
             appearance={{
