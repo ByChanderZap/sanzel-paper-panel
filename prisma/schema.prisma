@@ -13,7 +13,7 @@ generator client {
 model Clients {
   id            String      @id @default(cuid())
   name          String
-  email         String      
+  email         String?      
   phone         String
   shippingNumber String?
   address       String

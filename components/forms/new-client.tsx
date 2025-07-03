@@ -38,9 +38,9 @@ export function NewClientForm() {
             id="email"
             name="email"
             labelText="Email"
-            required={true}
             placeholder="Enter email address"
             type="email"
+            required={false}
             errors={state.errors?.email}
           />
           <InputFormText

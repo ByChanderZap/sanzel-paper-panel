@@ -7,9 +7,12 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
 export async function newClient(prevState: ClientsFormState, formData: FormData): Promise<ClientsFormState> {
+  const emailRaw = formData.get('email');
+  const email = emailRaw === '' ? undefined : emailRaw;
+
   const validatedFields = await NewClientSchema.safeParseAsync({
     name: formData.get('name'),
-    email: formData.get('email'),
+    email: email,
     phone: formData.get('phone'),
     shippingNumber: formData.get('shippingNumber'),
     address: formData.get('address'),

@@ -15,7 +15,9 @@ export const NewClientSchema = z
       .string()
       .email('Not a valid Email.')
       .min(1, { message: 'Email is required.' })
-      .max(300, { message: 'Email is too long.' }),
+      .max(300, { message: 'Email is too long.' })
+      .nullable()
+      .optional(),
     
     phone: z
       .string()
