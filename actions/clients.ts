@@ -46,16 +46,18 @@ export async function newClient(prevState: ClientsFormState, formData: FormData)
 export async function updateClientAction(prevState: UpdateClientFormState, formData: FormData): Promise<UpdateClientFormState> {
 
   const clientId = formData.get('clientId') as string
+  const emailRaw = formData.get('email');
+  const email = emailRaw === '' ? null : emailRaw;
+
   const validatedFields = await NewClientSchema.safeParseAsync({
     name: formData.get('name'),
-    email: formData.get('email'),
+    email: email,
     phone: formData.get('phone'),
     shippingNumber: formData.get('shippingNumber'),
     address: formData.get('address'),
     city: formData.get('city'),
     state: formData.get('state')
   })
-
   if(!validatedFields.success) {
     return {
       ...prevState,
