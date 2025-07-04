@@ -22,5 +22,7 @@ export function TableRow({
 
   const gridCols = gridColsMap[colCount] || "grid-cols-6";
 
-  return <div className={`grid ${gridCols}`}>{children}</div>;
+  return (
+    <div className={`grid ${gridCols}  hover:bg-orange-500/20`}>{children}</div>
+  );
 }

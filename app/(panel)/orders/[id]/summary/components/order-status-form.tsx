@@ -12,6 +12,8 @@ const statusLabels: Record<OrderStatus, string> = {
   SHIPPED: "Shipped",
   DELIVERED: "Delivered",
   CANCELLED: "Cancelled",
+  NOT_PAID: "Not Paid",
+  PAID: "Paid",
 };
 
 const statusColors: Record<OrderStatus, string> = {
@@ -21,6 +23,8 @@ const statusColors: Record<OrderStatus, string> = {
   SHIPPED: "bg-purple-500",
   DELIVERED: "bg-green-500",
   CANCELLED: "bg-red-500",
+  NOT_PAID: "bg-red-500",
+  PAID: "bg-green-500",
 };
 
 const statusOptions = Object.values(OrderStatus).map((status) => ({

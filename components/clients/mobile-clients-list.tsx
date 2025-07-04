@@ -21,7 +21,7 @@ export async function MobileClientsList({
             <MobileCardTop
               pinText={client.phone}
               primaryContent={client.name}
-              secondaryContent={client.email}
+              secondaryContent={client?.email ?? "No email"}
             />
             <MobileCardBottom
               leftTextHeader="Orders"

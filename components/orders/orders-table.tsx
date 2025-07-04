@@ -8,6 +8,7 @@ import {
   TableRowContent,
 } from "@/components/custom-table";
 import { OrdersPreview } from "@/types/orders";
+import { getStatusColor } from "@/utils/utils";
 
 export async function OrdersTable({
   ordersSummary,
@@ -38,7 +39,11 @@ export async function OrdersTable({
               />
               <TableRowContent
                 content={
-                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-secondary">
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      order.status
+                    )}`}
+                  >
                     {order.status}
                   </span>
                 }

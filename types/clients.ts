@@ -1,4 +1,4 @@
-import { Clients } from "@prisma/client";
+import { Clients, Prisma } from "@prisma/client";
 
 export type ClientsTableProprs = {
   query: string;
@@ -29,3 +29,52 @@ export interface ClientsFormState {
     state?: string[];
   };
 }
+
+export interface UpdateClientFormState {
+  errorMessage?: string | null;
+  success?: string | null;
+  errors?: {
+    name?: string[];
+    email?: string[];
+    phone?: string[];
+    shippingNumber?: string[];
+    address?: string[];
+    city?: string[];
+    state?: string[];
+  };
+  values?: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    shippingNumber?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+  };
+}
+
+// type ClientWithOrders = Prisma.clientsGetPayload<{
+//   include: {
+//     orders: {
+//       select: {
+//         id: true;
+//         price: true;
+//         createdAt: true;
+//         status: true;
+//       };
+//     };
+//   };
+// }>;
+
+export type ClientsWithOrders = Prisma.ClientsGetPayload<{
+    include: {
+    orders: {
+      select: {
+        id: true;
+        price: true;
+        createdAt: true;
+        status: true;
+      };
+    };
+  };
+}>

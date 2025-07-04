@@ -1,6 +1,6 @@
 import { db } from "@/lib/db"
 import { Clients, Prisma } from "@prisma/client"
-import { ClientWithStats } from "@/types/clients";
+import { ClientsWithOrders, ClientWithStats } from "@/types/clients";
 
 export async function createClient(data: Prisma.ClientsCreateInput)  {
    return await db.clients.create({
@@ -101,5 +101,29 @@ export const fetchClientsTotalPages = async (query?: string): Promise<number> =>
 export const getTotalClients = async () => {
   return await db.clients.count({
     where: { deletedAt: null }
+  })
+}
+
+export const getClientById = async (id: string): Promise<ClientsWithOrders | null> => {
+  return await db.clients.findUnique({
+    where: {id: id},
+    include: {
+      orders: {
+        select: {
+          id: true,
+          price: true,
+          createdAt: true,
+          status: true
+        },
+        take: 10
+      }
+    }
+  })
+}
+
+export const updateClient = async (id: string, data: Prisma.ClientsUpdateInput) => {
+  return await db.clients.update({
+    where: { id: id },
+    data: data
   })
 }

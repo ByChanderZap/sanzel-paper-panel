@@ -45,7 +45,7 @@ const PanelLayout = ({ children }: { children: React.ReactNode }) => {
           </div>
 
           {/* Main content */}
-          <div className="flex-1 p-4 md:p-8 md:ml-0">
+          <div className="flex-1 p-4 md:p-8 md:ml-0 overflow-x-hidden">
             {/* Add top padding on mobile to account for hamburger button */}
             <div className="pt-12 md:pt-0">{children}</div>
           </div>

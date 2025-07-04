@@ -8,6 +8,9 @@ export function InputFormText({
   htmlFor = id,
   errors,
   steps,
+  className = "",
+  defaultValue,
+  isPending,
 }: {
   labelText: string;
   required?: boolean;
@@ -18,6 +21,9 @@ export function InputFormText({
   htmlFor?: string;
   errors?: string[];
   steps?: string;
+  className?: string;
+  defaultValue?: string | number;
+  isPending?: boolean;
 }) {
   return (
     <div>
@@ -36,9 +42,11 @@ export function InputFormText({
           errors?.length
             ? "border-red-500 focus:ring-red-500"
             : "border-slate-600 focus:ring-orange-500"
-        }`}
+        } ${className}`}
         required={required}
         step={steps}
+        defaultValue={defaultValue}
+        disabled={isPending}
       />
       {errors?.length &&
         errors.map((err: string) => (

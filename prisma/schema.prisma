@@ -85,6 +85,8 @@ enum OrderStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+  PAID
+  NOT_PAID
 }
 
 enum PaperQuality {

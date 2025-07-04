@@ -21,5 +21,5 @@ export const CreateOrderSchema = z.object({
 
 export const UpdateOrderStatus = z.object({
   id: z.string().min(1, 'Invalid order ID'),
-  status: z.enum(['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'])
+  status: z.enum(['PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED', 'NOT_PAID', 'PAID'])
 })

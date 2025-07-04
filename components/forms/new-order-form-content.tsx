@@ -19,6 +19,8 @@ const statusLabels: Record<OrderStatus, string> = {
   SHIPPED: "Shipped",
   DELIVERED: "Delivered",
   CANCELLED: "Cancelled",
+  PAID: "Paid",
+  NOT_PAID: "Not Paid",
 };
 
 const statusOptions = Object.values(OrderStatus).map((status) => ({
