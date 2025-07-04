@@ -32,7 +32,7 @@ export async function ChartsSection() {
             mainText={`$ ${monthlySales
               .reduce((sum, item) => sum + item.revenue, 0)
               .toLocaleString()}`}
-            subText="Total Revenue"
+            subText="Total Revenue of the last 12 months"
           />
         </div>
 

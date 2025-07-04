@@ -27,13 +27,6 @@ export function ClientProfileSection({
         </div>
         <div className="text-center sm:text-left">
           {isEditing ? (
-            // <input
-            //   type="text"
-            //   name="name"
-            //   defaultValue={client.name}
-            //   className="text-xl sm:text-2xl font-bold bg-gray-700 border border-gray-600 rounded px-3 py-1 mb-2 w-full max-w-xs"
-            //   required
-            // />
             <InputFormText
               labelText="Name"
               placeholder="Enter name"

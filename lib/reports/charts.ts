@@ -14,7 +14,7 @@ export const getMonthlySales = async (year?: number, monthsBack: number = 12) =>
     where: {
       deletedAt: null,
       status: {
-        not: "CANCELLED"
+        notIn: ["CANCELLED", "NOT_PAID"]
       },
       createdAt: {
         gte: startDate,
@@ -72,4 +72,97 @@ export const getCurrentMonthRevenue = async () => {
     },
   })
   return orders
+}
+
+export const getMonthlyToBePaid = async (year?: number, monthsBack: number = 12) => {
+  const startDate = new Date();
+  startDate.setMonth(startDate.getMonth() - monthsBack);
+
+  const orders = await db.orders.findMany({
+    where: {
+      deletedAt: null,
+      status: "NOT_PAID",
+      createdAt: {
+        gte: startDate,
+        ...(year && {
+          gte: new Date(`${year}-01-01`),
+          lt: new Date(`${year + 1}-01-01`)
+        })
+      }
+    },
+    select: {
+      price: true,
+      createdAt: true,
+      discount: true
+    }
+  });
+
+  // Group by month and sum the price (minus discount if any)
+  const monthlyTotals: { [key: string]: number } = {};
+  orders.forEach(order => {
+    const date = new Date(order.createdAt);
+    const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    const total = order.price - (order.discount || 0);
+    monthlyTotals[monthKey] = (monthlyTotals[monthKey] || 0) + total;
+  });
+
+  return monthlyTotals;
+}
+
+export const getUnpayedOrders = async () => {
+  const orders = await db.orders.findMany({
+    select: {
+      id: true,
+      price: true,
+      createdAt: true,
+        client: {
+          select: {
+            name: true,
+            email: true,
+            phone: true,
+          }
+        }
+    },
+    where: {
+      deletedAt: null,
+      status: "NOT_PAID"
+    }
+  })
+  return orders
+}
+
+export const getOrdersReport = async (startDate: Date) => {
+  const orders = await db.orders.findMany({
+    where: {
+      deletedAt: null,
+      createdAt: {
+        gte: startDate,
+      },
+    },
+    select: {
+      id: true,
+      price: true,
+      createdAt: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+      orderItems: {
+        select: {
+          product: {
+            select: {
+              name: true,
+            },
+          },
+          quantity: true,
+          unit_price: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+  return orders;
 }

@@ -1,5 +1,6 @@
 import { InputFormText } from "@/components/form-parts/form-input-text";
 import { ClientsWithOrders, UpdateClientFormState } from "@/types/clients";
+import { formatMexicanPhone } from "@/utils/utils";
 
 export function ClientInformation({
   client,
@@ -61,7 +62,7 @@ export function ClientInformation({
             />
           ) : (
             <span className="sm:col-span-2 text-sm sm:text-base">
-              {client.phone ?? ""}
+              {client.phone ? formatMexicanPhone(client.phone) : ""}
             </span>
           )}
         </div>

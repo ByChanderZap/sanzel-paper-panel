@@ -1,17 +1,19 @@
 "use client";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { generateOrdersReport } from "../actions/generateOrdersReport";
 
 export function ReportGenerationSection() {
   const [reportType, setReportType] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const reportTypes = [
-    { value: "sales", label: "Sales Report" },
-    { value: "products", label: "Product Performance" },
-    { value: "customers", label: "Customer Analysis" },
-    { value: "inventory", label: "Inventory Report" },
+    { value: "orders", label: "Orders Report" },
+    { value: "unpayed", label: "Unpayed Orders" },
+    { value: "orders-month", label: "Orders by Month" },
+    { value: "unpayed-month", label: "Unpayed Orders by Month" },
   ];
 
   const months = [
@@ -29,15 +31,44 @@ export function ReportGenerationSection() {
     { value: "12", label: "December" },
   ];
 
-  const years = [
-    { value: "2025", label: "2025" },
-    { value: "2024", label: "2024" },
-    { value: "2023", label: "2023" },
-  ];
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 4 }, (_, i) => {
+    const year = currentYear - i;
+    return { value: String(year), label: String(year) };
+  });
 
-  const handleGenerateReport = () => {
-    // Logic will be implemented later
-    console.log("Generate report:", { reportType, month, year });
+  const handleGenerateReport = async () => {
+    if (reportType === "orders" && month && year) {
+      setLoading(true);
+      try {
+        const base64 = await generateOrdersReport({ month, year });
+        // Convert base64 to Blob
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "application/pdf" });
+        // Create a download link and click it
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `orders-report-${year}-${month}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        alert("Failed to generate report.");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      // Optionally handle other report types here
+      alert("Please select report type, month, and year.");
+    }
   };
 
   return (
@@ -116,10 +147,10 @@ export function ReportGenerationSection() {
         {/* Generate Button */}
         <button
           onClick={handleGenerateReport}
-          disabled={!reportType || !month || !year}
+          disabled={!reportType || !month || !year || loading}
           className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
         >
-          Generate Report
+          {loading ? "Generating..." : "Generate Report"}
         </button>
       </div>
     </section>
