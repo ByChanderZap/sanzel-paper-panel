@@ -166,3 +166,104 @@ export const getOrdersReport = async (startDate: Date) => {
   });
   return orders;
 }
+
+export const getUnpaidOrdersReport = async (startDate: Date) => {
+  const orders = await db.orders.findMany({
+    where: {
+      deletedAt: null,
+      status: 'NOT_PAID',
+      createdAt: {
+        gte: startDate,
+      },
+    },
+    select: {
+      id: true,
+      price: true,
+      createdAt: true,
+      client: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+  return orders;
+}
+
+export const getOrdersLastMonthReport = async () => {
+  const now = new Date();
+  const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const orders = await db.orders.findMany({
+    where: {
+      deletedAt: null,
+      createdAt: {
+        gte: firstDayLastMonth,
+        lt: firstDayThisMonth,
+      },
+      status: {
+        notIn: ["CANCELLED", "NOT_PAID"]
+      },
+    },
+    select: {
+      id: true,
+      price: true,
+      createdAt: true,
+      client: {
+        select: {
+          name: true,
+        },
+      },
+      orderItems: {
+        select: {
+          product: {
+            select: {
+              name: true,
+            },
+          },
+          quantity: true,
+          unit_price: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+  return orders;
+}
+
+export const getUnpaidOrdersLastMonthReport = async () => {
+  const now = new Date();
+  const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+  const orders = await db.orders.findMany({
+    where: {
+      deletedAt: null,
+      status: 'NOT_PAID',
+      createdAt: {
+        gte: firstDayLastMonth,
+        lt: firstDayThisMonth,
+      },
+    },
+    select: {
+      id: true,
+      price: true,
+      createdAt: true,
+      client: {
+        select: {
+          name: true,
+          email: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+  return orders;
+}

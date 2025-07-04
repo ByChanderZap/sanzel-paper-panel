@@ -1,19 +1,20 @@
 "use server";
 
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { getOrdersReport } from '@/lib/reports/charts';
+import { getUnpaidOrdersReport } from '@/lib/reports/charts';
 import fs from 'fs/promises';
 import path from 'path';
 
-export async function generateOrdersReport({ month, year }: { month: string, year: string }) {
+export async function generateUnpaidOrdersReport({ month, year }: { month: string, year: string }) {
   // 1. Parse input and calculate date range
   const startYear = parseInt(year, 10);
   const startMonth = parseInt(month, 10) - 1; // JS months are 0-based
   const startDate = new Date(startYear, startMonth, 1);
 
   // 2. Fetch orders data
-  const orders = await getOrdersReport(startDate);
-  // 3. Generate PDF
+  const orders = await getUnpaidOrdersReport(startDate);
+
+  // 3. Generate PDF (same design as paid orders report)
   const pdfDoc = await PDFDocument.create();
   let page = pdfDoc.addPage([595, 842]); // A4
 
@@ -65,7 +66,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
   }
 
   // Title
-  page.drawText('Orders Report', {
+  page.drawText('Unpaid Orders Report', {
     x: margin + 90,
     y: y - 10,
     size: 24,
@@ -88,13 +89,12 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
 
   y -= 60;
 
-  // Recalculated widths to fit within contentWidth (415px):
-  // Order ID: 110, Client: 90, Products: 210, Total: 70
+  // Table header for unpaid orders: Order ID, Client, Email, Total
   const columns = [
-    { title: 'Order ID', width: 110 },
-    { title: 'Client', width: 90 },
-    { title: 'Products', width: 210 },
-    { title: 'Total', width: 70 },
+    { title: 'Order ID', width: 140 },
+    { title: 'Client', width: 120 },
+    { title: 'Email', width: 180 },
+    { title: 'Total', width: 80 },
   ];
   const colPadding = 12;
   const headerHeight = 28;
@@ -130,49 +130,14 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
 
   // Calculate max rows per page
   const reservedBottom = 60; // 40 for total, 20 for footer
-
-  // Helper to draw total and footer
-  function drawTotalAndFooter(page: import('pdf-lib').PDFPage, totalSum: number) {
-    const totalY = margin + 40;
-    page.drawText('Total Revenue:', {
-      x: margin + contentWidth - 200,
-      y: totalY,
-      size: 14,
-      font: titleFont,
-      color: accentColor,
-    });
-    page.drawText(`$${totalSum.toFixed(2)}`, {
-      x: margin + contentWidth - 80,
-      y: totalY,
-      size: 14,
-      font: titleFont,
-      color: accentColor,
-    });
-    page.drawText(`Generated on ${new Date().toLocaleString()}`, {
-      x: margin,
-      y: totalY - 20,
-      size: 8,
-      font: bodyFont,
-      color: textColor,
-    });
-  }
-
   let totalSum = 0;
   orders.forEach((order, idx) => {
     x = margin;
-    // Products string
-    const productLines = order.orderItems.map(item => {
-      let name = item.product.name;
-      if (name.length > 28) name = name.slice(0, 25) + '...';
-      return `${name} (x${item.quantity})`;
-    });
-    const productLineCount = productLines.length;
-    // Calculate row height based on product lines, add extra space between lines
-    const thisRowHeight = Math.max(rowHeight, productLineCount * 16);
+    const thisRowHeight = rowHeight;
 
     // Check if there is enough space for the row + reservedBottom
     if (y - thisRowHeight < margin + reservedBottom) {
-      // Page break (do NOT draw total/footer here)
+      // Page break
       page = pdfDoc.addPage([595, 842]);
       // Redraw background
       page.drawRectangle({
@@ -191,7 +156,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
           height: 40,
         });
       }
-      page.drawText('Orders Report', {
+      page.drawText('Unpaid Orders Report', {
         x: margin + 90,
         y: pageHeight - margin - 10,
         size: 24,
@@ -248,19 +213,17 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
     });
     x += columns[1].width;
 
-    // Products (one per line, extra space)
-    let productY = y - 15;
-    for (const line of productLines) {
-      page.drawText(line, {
-        x: x + colPadding,
-        y: productY,
-        size: 10,
-        font: bodyFont,
-        color: textColor,
-        maxWidth: columns[2].width - colPadding * 2,
-      });
-      productY -= 16;
-    }
+    // Email
+    let email = order.client.email || '';
+    if (email.length > 28) email = email.slice(0, 25) + '...';
+    page.drawText(email, {
+      x: x + colPadding,
+      y: y - 15,
+      size: 10,
+      font: bodyFont,
+      color: textColor,
+      maxWidth: columns[2].width - colPadding * 2,
+    });
     x += columns[2].width;
 
     // Total (right-aligned in column, with smaller padding)
@@ -282,8 +245,32 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
   });
 
   // After the loop, always draw the total/footer on the last page
+  function drawTotalAndFooter(page: import('pdf-lib').PDFPage, totalSum: number) {
+    const totalY = margin + 40;
+    page.drawText('Total Revenue:', {
+      x: margin + contentWidth - 200,
+      y: totalY,
+      size: 14,
+      font: titleFont,
+      color: accentColor,
+    });
+    page.drawText(`$${totalSum.toFixed(2)}`, {
+      x: margin + contentWidth - 80,
+      y: totalY,
+      size: 14,
+      font: titleFont,
+      color: accentColor,
+    });
+    page.drawText(`Generated on ${new Date().toLocaleString()}`, {
+      x: margin,
+      y: totalY - 20,
+      size: 8,
+      font: bodyFont,
+      color: textColor,
+    });
+  }
   drawTotalAndFooter(page, totalSum);
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes).toString('base64');
-}
+} 

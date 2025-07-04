@@ -2,6 +2,9 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { generateOrdersReport } from "../actions/generateOrdersReport";
+import { generateUnpaidOrdersReport } from "../actions/generateUnpaidOrdersReport";
+import { generateOrdersLastMonthReport } from "../actions/generateOrdersLastMonthReport";
+import { generateUnpaidOrdersLastMonthReport } from "../actions/generateUnpaidOrdersLastMonthReport";
 
 export function ReportGenerationSection() {
   const [reportType, setReportType] = useState("");
@@ -12,8 +15,8 @@ export function ReportGenerationSection() {
   const reportTypes = [
     { value: "orders", label: "Orders Report" },
     { value: "unpayed", label: "Unpayed Orders" },
-    { value: "orders-month", label: "Orders by Month" },
-    { value: "unpayed-month", label: "Unpayed Orders by Month" },
+    { value: "orders-month", label: "Orders from last month" },
+    { value: "unpayed-month", label: "Unpayed Orders from last month" },
   ];
 
   const months = [
@@ -38,36 +41,61 @@ export function ReportGenerationSection() {
   });
 
   const handleGenerateReport = async () => {
-    if (reportType === "orders" && month && year) {
-      setLoading(true);
-      try {
-        const base64 = await generateOrdersReport({ month, year });
-        // Convert base64 to Blob
-        const byteCharacters = atob(base64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "application/pdf" });
-        // Create a download link and click it
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `orders-report-${year}-${month}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        alert("Failed to generate report.");
-        console.error(error);
-      } finally {
+    if (!reportType) {
+      alert("Please select report type.");
+      return;
+    }
+    // For month/year reports, skip validation
+    if (
+      (reportType === "orders" || reportType === "unpayed") &&
+      (!month || !year)
+    ) {
+      alert("Please select month and year.");
+      return;
+    }
+    setLoading(true);
+    try {
+      let base64: string | undefined;
+      let filename = "";
+      if (reportType === "orders") {
+        base64 = await generateOrdersReport({ month, year });
+        filename = `orders-report-${year}-${month}.pdf`;
+      } else if (reportType === "unpayed") {
+        base64 = await generateUnpaidOrdersReport({ month, year });
+        filename = `unpaid-orders-report-${year}-${month}.pdf`;
+      } else if (reportType === "orders-month") {
+        base64 = await generateOrdersLastMonthReport();
+        filename = `orders-report-last-month.pdf`;
+      } else if (reportType === "unpayed-month") {
+        base64 = await generateUnpaidOrdersLastMonthReport();
+        filename = `unpaid-orders-report-last-month.pdf`;
+      } else {
+        alert("Report type not implemented yet.");
         setLoading(false);
+        return;
       }
-    } else {
-      // Optionally handle other report types here
-      alert("Please select report type, month, and year.");
+      // Convert base64 to Blob
+      const byteCharacters = atob(base64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: "application/pdf" });
+      // Create a download link and click it
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      alert("Failed to generate report.");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -110,6 +138,9 @@ export function ReportGenerationSection() {
               value={month}
               onChange={(e) => setMonth(e.target.value)}
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              disabled={
+                reportType === "orders-month" || reportType === "unpayed-month"
+              }
             >
               <option value="">Select month</option>
               {months.map((m) => (
@@ -132,6 +163,9 @@ export function ReportGenerationSection() {
               value={year}
               onChange={(e) => setYear(e.target.value)}
               className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white appearance-none focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              disabled={
+                reportType === "orders-month" || reportType === "unpayed-month"
+              }
             >
               <option value="">Select year</option>
               {years.map((y) => (
@@ -147,7 +181,12 @@ export function ReportGenerationSection() {
         {/* Generate Button */}
         <button
           onClick={handleGenerateReport}
-          disabled={!reportType || !month || !year || loading}
+          disabled={
+            loading ||
+            !reportType ||
+            ((reportType === "orders" || reportType === "unpayed") &&
+              (!month || !year))
+          }
           className="w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-black font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
         >
           {loading ? "Generating..." : "Generate Report"}

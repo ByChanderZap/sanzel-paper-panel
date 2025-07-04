@@ -1,19 +1,15 @@
 "use server";
 
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import { getOrdersReport } from '@/lib/reports/charts';
+import { getOrdersLastMonthReport } from '@/lib/reports/charts';
 import fs from 'fs/promises';
 import path from 'path';
 
-export async function generateOrdersReport({ month, year }: { month: string, year: string }) {
-  // 1. Parse input and calculate date range
-  const startYear = parseInt(year, 10);
-  const startMonth = parseInt(month, 10) - 1; // JS months are 0-based
-  const startDate = new Date(startYear, startMonth, 1);
+export async function generateOrdersLastMonthReport() {
+  // 1. Fetch orders data
+  const orders = await getOrdersLastMonthReport();
 
-  // 2. Fetch orders data
-  const orders = await getOrdersReport(startDate);
-  // 3. Generate PDF
+  // 2. Generate PDF (same design as paid orders report)
   const pdfDoc = await PDFDocument.create();
   let page = pdfDoc.addPage([595, 842]); // A4
 
@@ -65,7 +61,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
   }
 
   // Title
-  page.drawText('Orders Report', {
+  page.drawText('Orders Report (Last Month)', {
     x: margin + 90,
     y: y - 10,
     size: 24,
@@ -73,10 +69,12 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
     color: accentColor,
   });
 
-  // Date range
-  const endDate = new Date();
+  // Date range (last month)
+  const now = new Date();
+  const firstDayLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const firstDayThisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
   page.drawText(
-    `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
+    `${firstDayLastMonth.toLocaleDateString()} - ${firstDayThisMonth.toLocaleDateString()}`,
     {
       x: margin + 90,
       y: y - 35,
@@ -88,8 +86,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
 
   y -= 60;
 
-  // Recalculated widths to fit within contentWidth (415px):
-  // Order ID: 110, Client: 90, Products: 210, Total: 70
+  // Table header (same widths as paid orders report)
   const columns = [
     { title: 'Order ID', width: 110 },
     { title: 'Client', width: 90 },
@@ -130,37 +127,10 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
 
   // Calculate max rows per page
   const reservedBottom = 60; // 40 for total, 20 for footer
-
-  // Helper to draw total and footer
-  function drawTotalAndFooter(page: import('pdf-lib').PDFPage, totalSum: number) {
-    const totalY = margin + 40;
-    page.drawText('Total Revenue:', {
-      x: margin + contentWidth - 200,
-      y: totalY,
-      size: 14,
-      font: titleFont,
-      color: accentColor,
-    });
-    page.drawText(`$${totalSum.toFixed(2)}`, {
-      x: margin + contentWidth - 80,
-      y: totalY,
-      size: 14,
-      font: titleFont,
-      color: accentColor,
-    });
-    page.drawText(`Generated on ${new Date().toLocaleString()}`, {
-      x: margin,
-      y: totalY - 20,
-      size: 8,
-      font: bodyFont,
-      color: textColor,
-    });
-  }
-
   let totalSum = 0;
   orders.forEach((order, idx) => {
     x = margin;
-    // Products string
+    // Products string (truncate long names)
     const productLines = order.orderItems.map(item => {
       let name = item.product.name;
       if (name.length > 28) name = name.slice(0, 25) + '...';
@@ -172,7 +142,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
 
     // Check if there is enough space for the row + reservedBottom
     if (y - thisRowHeight < margin + reservedBottom) {
-      // Page break (do NOT draw total/footer here)
+      // Page break
       page = pdfDoc.addPage([595, 842]);
       // Redraw background
       page.drawRectangle({
@@ -191,7 +161,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
           height: 40,
         });
       }
-      page.drawText('Orders Report', {
+      page.drawText('Orders Report (Last Month)', {
         x: margin + 90,
         y: pageHeight - margin - 10,
         size: 24,
@@ -199,7 +169,7 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
         color: accentColor,
       });
       page.drawText(
-        `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
+        `${firstDayLastMonth.toLocaleDateString()} - ${firstDayThisMonth.toLocaleDateString()}`,
         {
           x: margin + 90,
           y: pageHeight - margin - 35,
@@ -282,8 +252,32 @@ export async function generateOrdersReport({ month, year }: { month: string, yea
   });
 
   // After the loop, always draw the total/footer on the last page
+  function drawTotalAndFooter(page: import('pdf-lib').PDFPage, totalSum: number) {
+    const totalY = margin + 40;
+    page.drawText('Total Revenue:', {
+      x: margin + contentWidth - 200,
+      y: totalY,
+      size: 14,
+      font: titleFont,
+      color: accentColor,
+    });
+    page.drawText(`$${totalSum.toFixed(2)}`, {
+      x: margin + contentWidth - 80,
+      y: totalY,
+      size: 14,
+      font: titleFont,
+      color: accentColor,
+    });
+    page.drawText(`Generated on ${new Date().toLocaleString()}`, {
+      x: margin,
+      y: totalY - 20,
+      size: 8,
+      font: bodyFont,
+      color: textColor,
+    });
+  }
   drawTotalAndFooter(page, totalSum);
 
   const pdfBytes = await pdfDoc.save();
   return Buffer.from(pdfBytes).toString('base64');
-}
+} 
