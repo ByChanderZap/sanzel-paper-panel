@@ -65,6 +65,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
     }
   }
   revalidatePath('/orders')
+  revalidatePath('/dashboard')
   redirect('/orders')
 }
 
