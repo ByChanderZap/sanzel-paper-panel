@@ -72,6 +72,7 @@ async function main() {
       clientId: client1.id,
       vendorId: vendor1.id,
       price: 5000,
+      price_IVA: 5000 * 1.16,
       status: OrderStatus.PENDING,
       orderItems: {
         create: [
@@ -94,6 +95,7 @@ async function main() {
       clientId: client2.id,
       vendorId: vendor2.id,
       price: 3000,
+      price_IVA: 5000 * 1.16,
       status: OrderStatus.CONFIRMED,
       orderItems: {
         create: [
