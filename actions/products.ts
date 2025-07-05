@@ -36,5 +36,6 @@ export async function newProduct(prevState: ProductsFormState, formData: FormDat
     }
   }
   revalidatePath('/products')
+  revalidatePath("/orders/new");
   redirect('/products')
 }
