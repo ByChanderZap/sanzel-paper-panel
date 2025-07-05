@@ -19,7 +19,7 @@ export async function MobileClientsList({
         >
           <MobileCardLayout>
             <MobileCardTop
-              pinText={client.phone}
+              pinText={client.phone ?? undefined}
               primaryContent={client.name}
               secondaryContent={client?.email ?? "No email"}
             />
