@@ -91,6 +91,7 @@ export interface CreateOrderData {
   clientId: string
   vendorId: string
   orderTotal: number
+  discount: number
   status: OrderStatus
   orderItems: CreateOrderItemData[]
 }

@@ -11,15 +11,13 @@ import { OrderItemsWithProdsInfo } from "@/types/orders";
 
 export function SelectedProductsList({
   orderItems,
-  // updateOrderItem,
-  // calculateItemTotal,
   orderTotal,
+  discountedTotal,
   removeProductFromOrder,
 }: {
   orderTotal: number;
   orderItems: OrderItemsWithProdsInfo[];
-  // updateOrderItem: (itemId: string, field: string, value: number) => void;
-  // calculateItemTotal: (item: OrderItemsWithProdsInfo) => number;
+  discountedTotal: number;
   removeProductFromOrder: (itemId: string) => void;
 }) {
   return (
@@ -121,6 +119,20 @@ export function SelectedProductsList({
                 </span>
               </div>
             </div>
+
+            {/* Display discounted total */}
+            {discountedTotal !== orderTotal && (
+              <div className="bg-primary px-6 py-4 border-t border-gray-400 rounded-b-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-lg font-semibold text-white">
+                    Order Total with discount:
+                  </span>
+                  <span className="text-2xl font-bold text-green-400">
+                    ${discountedTotal.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+            )}
           </>
         )}
       </div>

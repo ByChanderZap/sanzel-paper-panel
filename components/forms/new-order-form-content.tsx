@@ -52,6 +52,7 @@ export function NewOrderFormContent({
   const [selectedVendor, setSelectedVendor] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("pending");
   const [orderItems, setOrderItems] = useState<OrderItemsWithProdsInfo[]>([]);
+  const [discount, setDiscount] = useState(0);
 
   // Product form state
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -76,6 +77,12 @@ export function NewOrderFormContent({
   const orderTotal = useMemo(
     () => orderItems.reduce((sum, item) => sum + calculateItemTotal(item), 0),
     [orderItems]
+  );
+
+  // Calculate discounted total
+  const discountedTotal = useMemo(
+    () => orderTotal * (1 - (discount > 0 ? discount / 100 : 0)),
+    [orderTotal, discount]
   );
 
   // Add product to order
@@ -146,6 +153,7 @@ export function NewOrderFormContent({
             name="orderTotal"
             value={orderTotal.toString()}
           />
+          <input type="hidden" name="discount" value={discount} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Left Column - Form Inputs */}
@@ -208,15 +216,31 @@ export function NewOrderFormContent({
                   </p>
                 )}
               </div>
+
+              {/* Discount Input */}
+              <div className="bg-primary p-6 rounded-3xl border border-gray-400 mt-4">
+                <label className="block text-custom-white text-lg font-medium mb-4">
+                  Discount (%)
+                </label>
+                <input
+                  type="number"
+                  name="discountInput"
+                  min={0}
+                  max={100}
+                  value={discount}
+                  onChange={(e) => setDiscount(Number(e.target.value))}
+                  className="w-full px-4 py-3 bg-primary border border-gray-600 rounded-2xl text-custom-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter discount percentage (optional)"
+                />
+              </div>
             </div>
 
             {/* Right Column - Products Table */}
             <SelectedProductsList
-              // calculateItemTotal={calculateItemTotal}
               orderItems={orderItems}
               orderTotal={orderTotal}
+              discountedTotal={discountedTotal}
               removeProductFromOrder={removeProductFromOrder}
-              // updateOrderItem={updateOrderItem}
             />
           </div>
 

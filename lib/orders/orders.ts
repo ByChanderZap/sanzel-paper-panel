@@ -11,6 +11,7 @@ export const createOrderWithItems = async (data: CreateOrderData) => {
         clientId: data.clientId,
         vendorId: data.vendorId,
         price_IVA: data.orderTotal * 1.16,
+        discount: data.discount,
         status: data.status,
         orderItems: {
           create: data.orderItems.map((item) => ({

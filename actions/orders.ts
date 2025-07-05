@@ -7,10 +7,9 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
 export const createOrderAction = async (prevState: OrderFormState, formData: FormData): Promise<OrderFormState> => {
-  console.log('Creating order')
-  console.log(formData)
   try {
     const orderItemsRaw = formData.get('orderItems') as string
+    const discount = formData.get('discount') as string
     const orderItems = JSON.parse(orderItemsRaw)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedOrderItems = orderItems.map((item: any) => ({
@@ -39,12 +38,14 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
         message: 'Validation error'
       }
     }
+    const discountInt = parseInt(discount) || 0
     const { data } = validatedFields
     await validateAndCreateOrderDetailed({
       clientId: data.clientId,
       vendorId: data.vendorId,
-      orderTotal: data.orderTotal,
+      orderTotal: discountInt > 0 ? data.orderTotal * (1 - discountInt / 100) : data.orderTotal,
       status: data.status,
+      discount: discountInt,
       orderItems: data.orderItems.map((item) => ({
         quantity: item.quantity,
         item_total: item.itemTotal,
@@ -54,25 +55,17 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
         productId: item.productId,
       }))
     })
-
-    //  return {
-      //   ...prevState,
-      //   message: 'Order created successfully',
-      //   success: true,
-      //   errors: {}
-      // }
-    } catch(error) {
-      console.error("Error while creating order:", error)
-      return {
-        ...prevState,
-        message: 'Failed to create order',
-        success: false,
-        errors: {}
-      }
+  } catch(error) {
+    console.error("Error while creating order:", error)
+    return {
+      ...prevState,
+      message: 'Failed to create order',
+      success: false,
+      errors: {}
     }
-    console.log('Order created successfully')
-    revalidatePath('/orders')
-    redirect('/orders')
+  }
+  revalidatePath('/orders')
+  redirect('/orders')
 }
 
 export const updateOrderStatusAction = async (prevState: OrderStatusFormState, formData: FormData): Promise<OrderStatusFormState> => {
