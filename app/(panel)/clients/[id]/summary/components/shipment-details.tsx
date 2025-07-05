@@ -25,7 +25,7 @@ export function ShipmentDetails({
           </span>
           {isEditing ? (
             <InputFormText
-              labelText="Shipping Number"
+              labelText="Shipping Number (optional)"
               placeholder="Enter shipping number"
               id="shippingNumber"
               name="shippingNumber"
@@ -36,6 +36,7 @@ export function ShipmentDetails({
               isPending={isPending}
               className="sm:col-span-2 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
               errors={state?.errors?.shippingNumber}
+              required={false}
             />
           ) : (
             <span className="sm:col-span-2 text-sm sm:text-base">

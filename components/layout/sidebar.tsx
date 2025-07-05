@@ -20,6 +20,7 @@ export const Sidebar = ({ onClose }: SidebarProps) => {
     { name: "Clients", href: "/clients", icon: Users },
     { name: "Products", href: "/products", icon: FileText },
     { name: "Reports", href: "/reports", icon: BarChart3 },
+    { name: "Vendors", href: "/vendors", icon: Users },
   ];
 
   const isActive = (href: string) => {

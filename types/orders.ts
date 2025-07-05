@@ -89,6 +89,7 @@ export interface OrderStatusFormState {
 
 export interface CreateOrderData {
   clientId: string
+  vendorId: string
   orderTotal: number
   status: OrderStatus
   orderItems: CreateOrderItemData[]
@@ -105,7 +106,8 @@ export interface CreateOrderItemData {
 
 export type DetailedOrder = Prisma.OrdersGetPayload<{
   include: {
-    client: true;
+    client: true,
+    vendor: true,
     orderItems: {
       include: {
         product: true;

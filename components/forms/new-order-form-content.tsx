@@ -7,10 +7,11 @@ import {
   Products,
 } from "@/types/orders";
 import { SelectedProductsList } from "@/components/orders/selected-products-list";
-import { Clients, OrderStatus } from "@prisma/client";
+import { Clients, OrderStatus, Vendor } from "@prisma/client";
 import { createOrderAction } from "@/actions/orders"; // You'll need to create this
 import { AddProducts } from "@/components/orders/new-order/add-products";
 import { OrderClientSelection } from "@/components/orders/new-order/client-selection";
+import { OrderVendorSelection } from "@/components/orders/new-order/vendor-selection";
 
 const statusLabels: Record<OrderStatus, string> = {
   PENDING: "Pending",
@@ -36,9 +37,11 @@ const initialState: OrderFormState = {
 export function NewOrderFormContent({
   clients,
   products,
+  vendors,
 }: {
   clients: Clients[];
   products: Products[];
+  vendors: Vendor[];
 }) {
   const [formState, formAction] = useActionState(
     createOrderAction,
@@ -46,6 +49,7 @@ export function NewOrderFormContent({
   );
 
   const [selectedClient, setSelectedClient] = useState("");
+  const [selectedVendor, setSelectedVendor] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("pending");
   const [orderItems, setOrderItems] = useState<OrderItemsWithProdsInfo[]>([]);
 
@@ -130,6 +134,7 @@ export function NewOrderFormContent({
         <form action={formAction}>
           {/* Hidden inputs for server action */}
           <input type="hidden" name="clientId" value={selectedClient} />
+          <input type="hidden" name="vendorId" value={selectedVendor} />
           <input type="hidden" name="status" value={selectedStatus} />
           <input
             type="hidden"
@@ -151,6 +156,15 @@ export function NewOrderFormContent({
                 formState={formState}
                 selectedClient={selectedClient}
                 setSelectedClient={setSelectedClient}
+              />
+
+              {/* Vendor Selection */}
+
+              <OrderVendorSelection
+                vendors={vendors}
+                formState={formState}
+                selectedVendor={selectedVendor}
+                setSelectedVendor={setSelectedVendor}
               />
 
               {/* Add Products */}

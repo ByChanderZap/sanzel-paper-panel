@@ -1,6 +1,7 @@
 import { Mail, MapPin, Phone, User } from "lucide-react";
 import { DetailedOrder } from "@/types/orders";
 import { Details } from "./details";
+import { VendorTab } from "./vendor-tab";
 
 export function LeftOrderSummaryColumn({
   orderData,
@@ -59,6 +60,9 @@ export function LeftOrderSummaryColumn({
         orderItems={orderData?.orderItems}
         orderTotal={orderData?.price}
       />
+
+      {/* Vendor Information */}
+      <VendorTab vendor={orderData?.vendor} />
     </div>
   );
 }

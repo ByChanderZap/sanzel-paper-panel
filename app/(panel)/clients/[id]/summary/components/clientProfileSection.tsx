@@ -36,6 +36,7 @@ export function ClientProfileSection({
               defaultValue={state?.values?.name || client.name}
               isPending={isPending}
               className="text-xl sm:text-2xl font-bold bg-gray-700 border border-gray-600 rounded px-3 py-1 mb-2 w-full max-w-xs"
+              required={true}
             />
           ) : (
             <h2 className="text-xl sm:text-2xl font-bold mb-1">

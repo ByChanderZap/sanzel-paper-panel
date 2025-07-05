@@ -52,10 +52,25 @@ async function main() {
     },
   });
 
+  // Create vendors
+  const vendor1 = await prisma.vendor.create({
+    data: {
+      name: 'Paper Supplier Inc.',
+      phone: '5551234567',
+    },
+  });
+  const vendor2 = await prisma.vendor.create({
+    data: {
+      name: 'Quality Paper Co.',
+      phone: '5559876543',
+    },
+  });
+
   // Create an order for client1
   const order1 = await prisma.orders.create({
     data: {
       clientId: client1.id,
+      vendorId: vendor1.id,
       price: 5000,
       status: OrderStatus.PENDING,
       orderItems: {
@@ -77,6 +92,7 @@ async function main() {
   const order2 = await prisma.orders.create({
     data: {
       clientId: client2.id,
+      vendorId: vendor2.id,
       price: 3000,
       status: OrderStatus.CONFIRMED,
       orderItems: {

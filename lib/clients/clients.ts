@@ -122,8 +122,18 @@ export const getClientById = async (id: string): Promise<ClientsWithOrders | nul
 }
 
 export const updateClient = async (id: string, data: Prisma.ClientsUpdateInput) => {
+  // Ensure cleared fields are set to null in the database
+  const updateData: Prisma.ClientsUpdateInput = {
+    name: data.name,
+    email: data.email === undefined ? null : data.email,
+    phone: data.phone === undefined ? null : data.phone,
+    shippingNumber: data.shippingNumber === undefined ? null : data.shippingNumber,
+    address: data.address === undefined ? null : data.address,
+    city: data.city === undefined ? null : data.city,
+    state: data.state === undefined ? null : data.state,
+  };
   return await db.clients.update({
     where: { id: id },
-    data: data
+    data: updateData
   })
 }

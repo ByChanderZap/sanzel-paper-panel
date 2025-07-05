@@ -37,7 +37,7 @@ export function NewClientForm() {
           <InputFormText
             id="email"
             name="email"
-            labelText="Email"
+            labelText="Email (optional)"
             placeholder="Enter email address"
             type="email"
             required={false}
@@ -46,16 +46,16 @@ export function NewClientForm() {
           <InputFormText
             id="phone"
             name="phone"
-            labelText="Phone Number"
+            labelText="Phone Number (optional)"
             placeholder="Enter phone number"
             type="tel"
-            required={true}
+            required={false}
             errors={state.errors?.phone}
           />
           <InputFormText
             id="shippingNumber"
             name="shippingNumber"
-            labelText="Client Number for Shipping"
+            labelText="Client Number for Shipping (optional)"
             placeholder="Enter client shipping number"
             type="text"
             required={false}
@@ -73,8 +73,8 @@ export function NewClientForm() {
           <InputFormText
             id="address"
             name="address"
-            labelText="Address"
-            required={true}
+            labelText="Address (optional)"
+            required={false}
             placeholder="Enter street address"
             type="text"
             errors={state.errors?.address}
@@ -82,8 +82,8 @@ export function NewClientForm() {
           <InputFormText
             id="city"
             name="city"
-            labelText="City"
-            required={true}
+            labelText="City (optional)"
+            required={false}
             placeholder="Enter city"
             type="text"
             errors={state.errors?.city}
@@ -91,8 +91,8 @@ export function NewClientForm() {
           <InputFormText
             id="state"
             name="state"
-            labelText="State"
-            required={true}
+            labelText="State (optional)"
+            required={false}
             placeholder="Enter state"
             type="text"
             errors={state.errors?.state}

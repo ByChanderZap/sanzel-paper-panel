@@ -9,6 +9,7 @@ export const createOrderWithItems = async (data: CreateOrderData) => {
       data:{
         price: data.orderTotal,
         clientId: data.clientId,
+        vendorId: data.vendorId,
         status: data.status,
         orderItems: {
           create: data.orderItems.map((item) => ({
@@ -140,6 +141,7 @@ export const fetchDetailedOrderById = async (id: string): Promise<DetailedOrder 
     },
     include: {
       client: {},
+      vendor: {},
       orderItems: {
         include: {
           product: {}

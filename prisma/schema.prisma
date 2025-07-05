@@ -14,11 +14,11 @@ model Clients {
   id            String      @id @default(cuid())
   name          String
   email         String?      
-  phone         String
+  phone         String?
   shippingNumber String?
-  address       String
-  city          String
-  state         String
+  address       String?
+  city          String?
+  state         String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
   deletedAt     DateTime?
@@ -47,6 +47,7 @@ model Products {
 model Orders {
   id         String         @id @default(cuid())
   clientId   String
+  vendorId   String         // Vendor relation
   price      Float                                // Total price in cents
   discount   Int?           @default(0)           // Discount in cents (optional)
   status     OrderStatus    @default(PENDING)
@@ -56,6 +57,7 @@ model Orders {
   
   // Relations
   client     Clients        @relation(fields: [clientId], references: [id])
+  vendor     Vendor         @relation(fields: [vendorId], references: [id])
   orderItems OrderItems[]
 }
 
@@ -96,4 +98,14 @@ enum PaperQuality {
   TERCERA
   SOBRANTE
   REPROCESO
+}
+
+model Vendor {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  orders    Orders[]
 }

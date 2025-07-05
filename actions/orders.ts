@@ -7,7 +7,8 @@ import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
 export const createOrderAction = async (prevState: OrderFormState, formData: FormData): Promise<OrderFormState> => {
-
+  console.log('Creating order')
+  console.log(formData)
   try {
     const orderItemsRaw = formData.get('orderItems') as string
     const orderItems = JSON.parse(orderItemsRaw)
@@ -23,6 +24,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
 
     const validatedFields = await CreateOrderSchema.safeParseAsync({
       clientId: formData.get('clientId'),
+      vendorId: formData.get('vendorId'),
       status: formData.get('status')?.toString().toUpperCase() as string,
       orderItems: parsedOrderItems,
       orderTotal: parseFloat(formData.get('orderTotal') as string)
@@ -40,6 +42,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
     const { data } = validatedFields
     await validateAndCreateOrderDetailed({
       clientId: data.clientId,
+      vendorId: data.vendorId,
       orderTotal: data.orderTotal,
       status: data.status,
       orderItems: data.orderItems.map((item) => ({
@@ -67,6 +70,7 @@ export const createOrderAction = async (prevState: OrderFormState, formData: For
         errors: {}
       }
     }
+    console.log('Order created successfully')
     revalidatePath('/orders')
     redirect('/orders')
 }

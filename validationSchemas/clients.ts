@@ -21,10 +21,11 @@ export const NewClientSchema = z
     
     phone: z
       .string()
-      .min(1, { message: 'Phone number is required.' })
-      .min(10, { message: 'Phone number must be at least 10 digits.' })
-      .max(11, { message: 'Phone number must be at most 11 digits.' })
-      .regex(/^\d+$/, { message: 'Phone number must contain only digits.' }),
+      .transform(val => val === '' ? undefined : val)
+      .optional()
+      .refine(val => !val || /^\d+$/.test(val), { message: 'Phone number must contain only digits.' })
+      .refine(val => !val || val.length >= 10, { message: 'Phone number must be at least 10 digits.' })
+      .refine(val => !val || val.length <= 11, { message: 'Phone number must be at most 11 digits.' }),
     
     shippingNumber: z
       .string()
@@ -33,16 +34,19 @@ export const NewClientSchema = z
     
     address: z
       .string()
-      .min(3, { message: 'Address is required' })
-      .max(300, { message: 'Address exceeded character limit' }),
+      .max(300, { message: 'Address exceeded character limit' })
+      .transform(val => val === '' ? undefined : val)
+      .optional(),
 
     city: z
       .string()
-      .min(3, { message: 'City is required' })
-      .max(300, { message: 'City exceeded character limit' }),
+      .max(300, { message: 'City exceeded character limit' })
+      .transform(val => val === '' ? undefined : val)
+      .optional(),
 
     state: z
       .string()
-      .min(3, { message: 'State is required' })
       .max(300, { message: 'State exceeded character limit' })
+      .transform(val => val === '' ? undefined : val)
+      .optional(),
   })

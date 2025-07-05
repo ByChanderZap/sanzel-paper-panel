@@ -26,7 +26,7 @@ export function ClientInformation({
           </span>
           {isEditing ? (
             <InputFormText
-              labelText="Email"
+              labelText="Email (optional)"
               placeholder="Enter email"
               id="email"
               name="email"
@@ -35,6 +35,7 @@ export function ClientInformation({
               isPending={isPending}
               className="sm:col-span-2 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
               errors={state?.errors?.email}
+              required={false}
             />
           ) : (
             <span className="sm:col-span-2 text-sm sm:text-base break-all">
@@ -50,7 +51,7 @@ export function ClientInformation({
           </span>
           {isEditing ? (
             <InputFormText
-              labelText="Phone"
+              labelText="Phone (optional)"
               placeholder="Enter phone"
               id="phone"
               name="phone"
@@ -59,6 +60,7 @@ export function ClientInformation({
               isPending={isPending}
               errors={state?.errors?.phone}
               className="sm:col-span-2 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
+              required={false}
             />
           ) : (
             <span className="sm:col-span-2 text-sm sm:text-base">
@@ -75,7 +77,7 @@ export function ClientInformation({
           {isEditing ? (
             <div className="sm:col-span-2 grid grid-cols-1 sm:grid-cols-3 gap-2">
               <InputFormText
-                labelText="Address"
+                labelText="Address (optional)"
                 placeholder="Enter address"
                 id="address"
                 name="address"
@@ -84,9 +86,10 @@ export function ClientInformation({
                 isPending={isPending}
                 className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
                 errors={state?.errors?.address}
+                required={false}
               />
               <InputFormText
-                labelText="City"
+                labelText="City (optional)"
                 placeholder="Enter city"
                 id="city"
                 name="city"
@@ -95,9 +98,10 @@ export function ClientInformation({
                 isPending={isPending}
                 className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
                 errors={state?.errors?.city}
+                required={false}
               />
               <InputFormText
-                labelText="State"
+                labelText="State (optional)"
                 placeholder="Enter state"
                 id="state"
                 name="state"
@@ -106,6 +110,7 @@ export function ClientInformation({
                 isPending={isPending}
                 errors={state?.errors?.state}
                 className="bg-gray-700 border border-gray-600 rounded px-3 py-2 text-sm sm:text-base w-full"
+                required={false}
               />
             </div>
           ) : (
