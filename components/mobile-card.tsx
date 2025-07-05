@@ -1,5 +1,3 @@
-// import { OrderSummary } from "../types/dashboard";
-
 import { OrdersPreview } from "@/types/orders";
 
 export default function MobileCard({ order }: { order: OrdersPreview }) {
@@ -20,6 +18,7 @@ export default function MobileCard({ order }: { order: OrdersPreview }) {
           {order.createdAt.toDateString()}
         </div>
         <div className="font-medium text-lg">${order.price}</div>
+        <div className="font-medium text-lg">${order.price_IVA}</div>
       </div>
     </div>
   );

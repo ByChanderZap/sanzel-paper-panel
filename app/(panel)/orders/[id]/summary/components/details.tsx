@@ -12,9 +12,11 @@ type OrderItems = NonNullable<DetailedOrder>["orderItems"];
 export function Details({
   orderItems,
   orderTotal,
+  orderTotalIva,
 }: {
   orderItems: OrderItems | null | undefined;
   orderTotal?: number;
+  orderTotalIva?: number;
 }) {
   const colNames = ["Product", "Quantity", "Price", "Total"];
 
@@ -50,6 +52,10 @@ export function Details({
         <div className="flex justify-between items-center text-lg font-semibold">
           <span className="text-white">Total</span>
           <span className="text-white">${orderTotal}</span>
+        </div>
+        <div className="flex justify-between items-center text-lg font-semibold mt-4 border-t border-gray-500 pt-4">
+          <span className="text-white">Total With IVA</span>
+          <span className="text-white">${orderTotalIva}</span>
         </div>
       </div>
     </div>

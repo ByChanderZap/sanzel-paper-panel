@@ -15,7 +15,14 @@ export async function OrdersTable({
 }: {
   ordersSummary: OrdersPreview[];
 }) {
-  const colNames = ["Order Id", "Client", "Date", "Status", "Total"];
+  const colNames = [
+    "Order Id",
+    "Client",
+    "Date",
+    "Status",
+    "Total",
+    "Total IVA",
+  ];
 
   return (
     <CustomTable>
@@ -50,6 +57,10 @@ export async function OrdersTable({
               />
               <TableRowContent
                 content={`$${order.price}`}
+                className="font-medium"
+              />
+              <TableRowContent
+                content={`$${order.price_IVA}`}
                 className="font-medium"
               />
             </TableRow>

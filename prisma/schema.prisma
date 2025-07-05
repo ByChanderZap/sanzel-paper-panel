@@ -49,6 +49,7 @@ model Orders {
   clientId   String
   vendorId   String         // Vendor relation
   price      Float                                // Total price in cents
+  price_IVA  Float                               // Total price with IVA in cents
   discount   Int?           @default(0)           // Discount in cents (optional)
   status     OrderStatus    @default(PENDING)
   createdAt  DateTime       @default(now())

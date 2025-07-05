@@ -59,6 +59,7 @@ export function LeftOrderSummaryColumn({
       <Details
         orderItems={orderData?.orderItems}
         orderTotal={orderData?.price}
+        orderTotalIva={orderData?.price_IVA}
       />
 
       {/* Vendor Information */}
