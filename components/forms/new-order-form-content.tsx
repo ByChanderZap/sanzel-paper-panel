@@ -69,7 +69,7 @@ export function NewOrderFormContent({
 
   // Calculate item total
   const calculateItemTotal = (item: OrderItemsWithProdsInfo) => {
-    const multiplier = (item.width * item.linear_size) / 100; // Convert to m²
+    const multiplier = (item.width * item.linear_size) / 100;
     return item.quantity * item.unit_price * multiplier;
   };
 

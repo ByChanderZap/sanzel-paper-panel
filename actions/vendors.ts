@@ -30,6 +30,7 @@ export async function newVendor(prevState: VendorsFormState, formData: FormData)
   }
 
   revalidatePath('/vendors');
+  revalidatePath('/orders/new');
   redirect('/vendors');
 }
 
